@@ -263,15 +263,17 @@ Every AI session MUST produce a traceable record of what was done. This ensures 
 - "TensorBoard me suffit" — Pas assez douloureux
 - "Cool projet!" sans histoire — Politesse, pas validation
 
-### Livrables du Mom Test
+### Livrables du Mom Test & Acquisition
 - [ ] `mom_test_script.md` — Questions d'entretien (EN/FR)
 - [ ] `mom_test_results.md` — Comptes-rendus des interviews (EN/FR)
 - [ ] `decision.md` — Go/No-Go/Pivot avec justification (EN/FR)
+- [ ] **Mise à jour de `acquisition_tracker.md` (MANDATORY)** — Tout post (Reddit, Discord, X) pour le Mom Test ou le Growth DOIT être consigné dans `~/Documents/kuro-rules/acquisition_tracker.md` avec son résultat (ban, succès, réponse) pour créer une mémoire collective d'acquisition.
 
 ### Integration Progress Tracking
 Le Mom Test represente **les premiers 10%** du progress. Un projet ne peut pas depasser 10% sans:
 - `mom_test_results.md` complete
 - Decision documentee dans `decision.md`
+- Mise à jour de `acquisition_tracker.md` avec les plateformes testées.
 
 ### AI Guidance During Mom Test (MANDATORY)
 Pendant la periode Mom Test (0-10%), l'agent DOIT:

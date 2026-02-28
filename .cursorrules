@@ -1,51 +1,3 @@
-<<<<<<< HEAD
-[
-  {
-    "rule": "RULE 1: Read Rules First — MANDATORY",
-    "description": "AI agents MUST read AGENTS.md at the START of every session, BEFORE any other action."
-  },
-  {
-    "rule": "RULE 2: Mom Test Gate — MANDATORY",
-    "description": "Project CANNOT exceed 10% progress until Mom Test is COMPLETE (5+ interviews, results documented). No production code allowed."
-  },
-  {
-    "rule": "RULE 3: Progress Tracking — MANDATORY",
-    "description": "Track pessimistic progress in SESSION_SUMMARY.md (Mom Test 10%, Core 40%, Tests 20%, Security 10%, CI/CD 10%, Docs 10%)."
-  },
-  {
-    "rule": "RULE 4: Session Summary — MANDATORY",
-    "description": "Update SESSION_SUMMARY.md at the end of every session with BOTH English and French sections."
-  },
-  {
-    "rule": "RULE 6: Security Scanning — MANDATORY",
-    "description": "Run language-specific scanners (bandit/safety for Python, audit/clippy for Rust, npm audit for Node) before commit."
-  },
-  {
-    "rule": "RULE 9: No Emojis Anywhere — MANDATORY",
-    "description": "Emojis are FORBIDDEN in all project files, code, comments, and docs (except SESSION_SUMMARY section headers)."
-  },
-  {
-    "rule": "RULE 11: Sync Rule — MANDATORY",
-    "description": "Sync rule updates between projects and ~/Documents/kuro-rules."
-  },
-  {
-    "rule": "RULE 14: Periodic Validation — MANDATORY",
-    "description": "STOP and validate at milestones (25%, 50%, 75%, 90%, 95%) via Mom/Marketing Tests."
-  },
-  {
-    "rule": "RULE 20: Hard Milestone Lock — CRITICAL",
-    "description": "SYSTEM LOCK: No code edits permitted if milestone reached without 'VALIDATION_PASSED' in SESSION_SUMMARY.md."
-  },
-  {
-    "rule": "RULE 21: Intelligence Harvester — MANDATORY",
-    "description": "Analyze 3+ external sources for pain points at every milestone."
-  },
-  {
-    "rule": "RULE 22: Feature Focus Rule — MANDATORY",
-    "description": "Development MUST focus on only ONE specific feature for each periodic validation cycle (25%, 50%, 75%, 90%, 95%). Focus on depth over breadth."
-  }
-]
-=======
 # Kuro Rules (.cursorrules)
 
 Shared AI rules for all projects. **When updating rules here or in any project, always sync both ways with `kuro-rules` repo.**
@@ -284,8 +236,17 @@ When ANY rule file is updated, ALL rule files MUST be updated:
 - .cursorrules
 - copilot-instructions.md
 - GAD.md
+- acquisition_tracker.md
 
 **Enforcement**: SYNC immediately to all files, document in SYNC_LOG.md.
+
+---
+
+## Acquisition Tracker (MANDATORY)
+
+All Outreach/Growth/Mom Test posts MUST be logged in `~/Documents/kuro-rules/acquisition_tracker.md` to document platform success/bans.
+
+**Enforcement**: Any communication attempt (Reddit, Discord, etc.) must generate an entry in this tracker.
 
 ---
 
@@ -321,4 +282,3 @@ Before transitioning to the next phase, the user MUST demonstrate deep understan
 5. "What did you learn that surprised you?"
 
 **Enforcement**: STOP and provide deep explanation before phase transition.
->>>>>>> 58e8bc5bddd5383ebd48f8116c5d08db0a7ca39b
