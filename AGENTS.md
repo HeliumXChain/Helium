@@ -586,7 +586,6 @@ IF phase transition requested without deep understanding:
 
 ---
 
-<<<<<<< HEAD
 ## RULE 18: Regression Prevention — MANDATORY
 
 ### Rule
@@ -744,21 +743,6 @@ When asking "Did you follow AGENTS.md?", the agent MUST provide:
 7.  **Rule 7**: "Any failures: [NONE/REPORTED]"
 8.  **Rule 8**: "Critical thinking applied: [YES/NO - details]"
 9.  **Rule 9**: "Emojis: [NONE FOUND/REMOVED]"
-=======
-## VERIFICATION CHECKLIST FOR USERS
-
-When asking "Did you follow AGENTS.md?", the agent MUST provide:
-
-1. **Rule 1**: "I read AGENTS.md at the start of this session"
-2. **Rule 2**: "Mom Test status: [COMPLETE/IN PROGRESS/NOT STARTED]"
-3. **Rule 3**: "Progress: X% (calculated as: [breakdown])"
-4. **Rule 4**: "SESSION_SUMMARY.md: [UPDATED/NEEDS UPDATE]"
-5. **Rule 5**: "Test coverage: X%"
-6. **Rule 6**: "Security scans: [PASSED/FAILED/PENDING]"
-7. **Rule 7**: "Any failures: [NONE/REPORTED]"
-8. **Rule 8**: "Critical thinking applied: [YES/NO - details]"
-9. **Rule 9**: "Emojis: [NONE FOUND/REMOVED]"
->>>>>>> 58e8bc5bddd5383ebd48f8116c5d08db0a7ca39b
 10. **Rule 10**: "Protected files: [SAFE/EXPOSED]"
 11. **Rule 11**: "Rules synced: [YES/NO]"
 12. **Rule 12**: "Roadmap: [EXISTS/MISSING] - Task aligned: [YES/NO]"
@@ -767,7 +751,6 @@ When asking "Did you follow AGENTS.md?", the agent MUST provide:
 15. **Rule 15**: "All rule files synced: [YES/NO]"
 16. **Rule 16**: "Working demos: [2+/1/0]"
 17. **Rule 17**: "Deep understanding demonstrated: [YES/NO]"
-<<<<<<< HEAD
 18. **Rule 18**: "Regression prevention: [FOLLOWED - entire suite ran?]"
 19. **Rule 19**: "Strict Versioning: [vX.Y.Z-author tag created?]"
 20. **Rule 20**: "Hard Milestone Lock: [LOCKED/UNLOCKED]"
@@ -775,8 +758,6 @@ When asking "Did you follow AGENTS.md?", the agent MUST provide:
 22. **Rule 22**: "Feature Focus Rule: Only one feature focused on for this validation cycle? [YES/NO]"
 23. **Rule 23**: "Knowledge Capture: Post-mortem documented for pivot/failure? [YES/NO]"
 24. **Rule 24**: "Marketing & Outreach Guardian: Communities identified & templates drafted? [YES/NO]"
-=======
->>>>>>> 58e8bc5bddd5383ebd48f8116c5d08db0a7ca39b
 
 ---
 
@@ -801,14 +782,11 @@ When asking "Did you follow AGENTS.md?", the agent MUST provide:
 | Rule 15 (Rule Synchronization) | SYNC all rule files immediately |
 | Rule 16 (Working Demos) | STOP and create 2 working demos |
 | Rule 17 (Deep Understanding) | STOP and provide deep explanation |
-<<<<<<< HEAD
 | Rule 18 (Regression Prevention) | STOP and fix immediately |
 | Rule 19 (Strict Versioning) | STOP and create tag immediately |
 | Rule 20 (Hard Milestone Lock) | SYSTEM LOCK: No code edits permitted until validation results are provided |
 | Rule 21 (Intel Harvester) | STOP and conduct intelligence research immediately |
 | Rule 22 (Feature Focus) | STOP and re-focus on a single feature |
-=======
->>>>>>> 58e8bc5bddd5383ebd48f8116c5d08db0a7ca39b
 
 ---
 

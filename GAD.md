@@ -41,9 +41,8 @@ Maintain high standards. No emojis (Rule 9), 60% test coverage (Rule 5), and con
 
 To ensure the highest quality and depth of implementation, development MUST focus on only ONE specific feature for each periodic validation cycle (25%, 50%, 75%, 90%, 95%). This focus on depth over breadth continues even after the MVP phase.
 
-<<<<<<< HEAD
 **Enforcement**: STOP development at each milestone until validation is complete.
-=======
+
 ## Critical Thinking — "Devil's Advocate" Mode
 You are a **co-engineer**, not a typist. Do not be a passive executor.
 

@@ -9,6 +9,7 @@
 | Plateforme / Subreddit | Audience Cible | Projet(s) Testé(s) | Résultat & Karma | Remarques / Règles Spécifiques |
 | :--- | :--- | :--- | :--- | :--- |
 | **Reddit** : `r/MLQuestions` | Devs IA, Débutants | Helium | [x] Accepté direct | Pas de blocage lié au Karma pour le moment. Bon pour valider des hypothèses techniques larges. |
+| **Reddit** : `r/learnmachinelearning` | Apprentis ML | Helium | [x] Accepté direct | Pas de blocage lié au Karma. Bon pour tester la douleur des débutants face aux coûts d'infra. |
 | **Discord** : `FrancophonIA` | Devs francophones | Helium | [x] Actif | Très bonne réactivité. Les membres partagent volontiers leur setup matériel. |
 
 ---
@@ -20,6 +21,7 @@
 *   **Action** : Lancement du Mom Test sur la douleur du coût des GPU.
 *   **Discord `FrancophonIA`** : Post réussi. Première réponse obtenue d'un utilisateur ("Toujours en local perso, sauf entraînement XXL").
 *   **Reddit `r/MLQuestions`** : Post réussi sans blocage de l'AutoModerator. En attente de réponses.
+*   **Reddit `r/learnmachinelearning`** : Post réussi. En attente de réponses.
 
 ---
 

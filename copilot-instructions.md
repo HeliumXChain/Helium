@@ -28,9 +28,8 @@
 
 To ensure the highest quality and depth of implementation, development MUST focus on only ONE specific feature for each periodic validation cycle (25%, 50%, 75%, 90%, 95%). This focus on depth over breadth continues even after the MVP phase.
 
-<<<<<<< HEAD
 **Enforcement**: STOP development at each milestone until validation is complete.
-=======
+
 ## Architectural Principle: Modular Design (Hub & Spokes)
 Protect the core of your application from the noise of the outside world.
 - **Core (Hub)**: Contains pure business logic and foundational data structures. It stays stable.

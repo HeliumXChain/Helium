@@ -331,7 +331,6 @@ At progress milestones (25%, 50%, 75%, 90%, 95%), the product MUST be validated:
 
 ---
 
-<<<<<<< HEAD
 ## Feature Focus Rule (MANDATORY)
 
 To ensure the highest quality and depth of implementation, development MUST focus on only ONE specific feature for each periodic validation cycle.
@@ -341,11 +340,6 @@ To ensure the highest quality and depth of implementation, development MUST focu
 3.  **Post-MVP Continuity**: This rule remains active even after the MVP (Minimum Viable Product) phase to maintain long-term product standards.
 
 **Enforcement**: Development on other features is paused until the current target feature is fully validated.
-
----
-
-=======
->>>>>>> 58e8bc5bddd5383ebd48f8116c5d08db0a7ca39b
 ## No Emojis Anywhere (MANDATORY)
 
 Emojis are FORBIDDEN in ALL project files, code, comments, documentation, CLI output, and user-facing text.
