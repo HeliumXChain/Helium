@@ -1,0 +1,15 @@
+﻿Helium,Competitor Bittensor (TAO) operates AI marketplace P2P,https://bittensor.com,2026-02-28,Global,existence du marche,high,Market exists for decentralized AI compute,How does Helium differentiate from Bittensor?
+Helium,Competitor Gensyn building deep learning compute L1,https://gensyn.ai,2026-02-28,Global,existence du marche,high,Investment flowing into decentralized AI compute,What is Gensyn's verification mechanism?
+Helium,Competitor Akash Network active decentralized cloud,https://akash.network,2026-02-28,Global,existence du marche,high,Users pay for decentralized compute today,How does tokenomics compare?
+Helium,Competitor Render Network active for 3D rendering extending to AI,https://rendernetwork.com,2026-02-28,Global,existence du marche,high,GPU compute marketplace validated,Is AI training a natural extension?
+Helium,Competitor Qubic uses Useful PoW for neural network training,https://qubic.org,2026-02-28,Global,existence du marche,high,Proof of Useful Work for AI is implemented,How efficient is their verification?
+Helium,Competitor DeepBrain Chain AI compute blockchain,https://deepbrainchain.org,2026-02-28,Global,existence du marche,medium,Blockchain for AI compute exists,Adoption level unclear
+Helium,AWS GPU costs are prohibitively expensive for startups,https://aws.amazon.com/ec2/instance-types/p3/,2026-02-28,Global,urgence,high,Cloud GPU pricing is a pain point,Is decentralized compute cheaper?
+Helium,Vast.ai marketplace for GPU rental exists,https://vast.ai,2026-02-28,Global,existence du marche,high,GPU rental marketplace validated,What are Vast.ai's limitations?
+Helium,Mom Test #1 Robino uses local GPU for small models AWS/Vast.ai for XXL,Discord FrancophonIA interview,2026-02-28,France,urgence,medium,Users workaround high cloud costs,Need more interviews to validate pattern
+Helium,Mom Test #1 Robino confirms Docker infrastructure pain for cloud deployment,Discord FrancophonIA interview,2026-02-28,France,urgence,medium,Infrastructure complexity is a pain point,Is this a wedge for Helium?
+Helium,Training XXL models requires cloud or distributed compute,Discord FrancophonIA interview,2026-02-28,Global,urgence,medium,Large model training forces cloud usage,What size threshold triggers cloud need?
+Helium,PoUW verification requires zk-ML or cross-verification,research/analysis_compute_to_earn.md,2026-02-28,Global,faisabilite,medium,Technical solution exists for verification,Implementation complexity unknown
+Helium,Rust recommended for blockchain development 2026+,research/implementation_plan.md,2026-02-28,Global,faisabilite,high,Technology stack is mature,Development effort estimation needed
+Helium,Bootstrap Phase 1 cost near-zero (prototyping),research/bootstrapped_feasibility.md,2026-02-28,Global,faisabilite,high,Initial development is affordable,Phase 2/3 funding strategy needed
+Helium,Security audits cost 50k-200k USD for mainnet,research/bootstrapped_feasibility.md,2026-02-28,Global,faisabilite,medium,Mainnet launch is expensive,Can we fund via token sale?
