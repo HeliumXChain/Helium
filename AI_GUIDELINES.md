@@ -119,7 +119,7 @@ To prevent "milestone amnesia," development MUST automatically lock when progres
 ## Rule 21: Intelligence Harvester — MANDATORY
 L'agent a l'obligation de collecter et d'analyser au moins 3 sources externes (Reddit, App Store, Forums) pour identifier les "Pain Points" utilisateurs et les failles des concurrents à chaque jalon (10, 25, 50, 75, 90, 95%). Cette analyse doit être consignée avant toute validation.
 
-## Security Hardening — Non-Negotiable
+## Security Hardening - Non-Negotiable
 Every project must be secure by default.
 - **Never** log, print, or commit API keys, tokens, or secrets.
 - **Always** validate and sanitize user input to prevent injection.
@@ -295,6 +295,9 @@ Les fichiers d'idees et d'architecture DOIVENT etre dans `.gitignore`:
 - `mom_test_results.md` — donnees d'interview privees
 - `ideas.md` — brainstorms work-in-progress
 - `architecture_notes.md` — notes d'architecture
+- `concept/` — dossier de vision et strategie
+- `mom_test_script.md` — questions d'entretien
+- `decision.md` — documents de decision strategique
 
 **Raison**: Ces fichiers contiennent des reflexions en cours, des donnees privees, et ne doivent pas etre exposes publiquement.
 
@@ -395,3 +398,379 @@ Before transitioning to the next phase, the user MUST demonstrate deep understan
 5. "What did you learn that surprised you?"
 
 **Enforcement**: STOP and provide deep explanation before phase transition.
+
+---
+
+## RULE 24: Marketing & Outreach Guardian - MANDATORY
+Avant tout lancement public, outreach, ou campagne marketing, l'agent DOIT preparer les fondations de communication.
+
+### Verification minimum
+- Identifier au moins 3 communautes ou canaux pertinents pour le projet.
+- Preparer un canal de feedback actif et surveille.
+- Preparer des templates d'annonce, bug report, et feature request.
+- Verifier que le contenu marketing respecte le scope reel du produit.
+
+### Enforcement
+- Pas de lancement public sans canal de retour ni templates prets.
+- Pas de promesse marketing qui depasse le scope reel valide.
+
+---
+
+## RULE 25: MLOps/DevOps Collaboration — MANDATORY
+
+### Rule
+When interacting with a DevOps or MLOps engineer on this repository, the AI Agent MUST shift its focus to infrastructure, delivery, and reliability.
+
+### Verification Checklist
+```
+WHEN working on infrastructure/deployment:
+  1. FOCUS: Are we prioritizing reproducibility and clean pipelines?
+  2. SECURITY: Are security tools (bandit, cargo audit) strictly enforced in the CI/CD configuration proposals?
+  3. MLOPS: Are we tracking experiments and versioning data appropriately?
+```
+
+### Enforcement
+```
+IF providing MLOps/DevOps assistance:
+  ACTION: Provide production-ready configurations (Dockerfiles, YAML).
+  ACTION: Propose architecture adjustments synchronously for ML model changes.
+  DO NOT: Provide brittle or untestable infrastructure code.
+```
+
+---
+
+## RULE 26: DevOps/MLOps Milestone Task Generation — MANDATORY
+
+### Rule
+At every progress milestone (10%, 25%, 50%, 75%, 90%, 95%), the AI Agent MUST strictly analyze the repository's current state and propose exactly **5 concrete DevOps or MLOps tasks**.
+
+### Requirements
+1. **Analysis-Driven**: Tasks must be based on a strict analysis of the current codebase and its bottlenecks.
+2. **Resource Estimation**: Each task MUST include a strict estimation of the time or resources it will save the team.
+3. **Documentation**: These tasks MUST be documented in the infrastructure_planning/ folder in TWO Markdown files: an English version (milestone_X_tasks.md) and a French pedagogical version (milestone_X_tasks_fr.md).
+4. **Actionable**: Tasks must be ready for a DevOps/MLOps engineer to pick up.
+5. **Linear Integration**: Each task MUST also be created as a Linear issue in the appropriate DevOps/MLOps team, with full description, acceptance criteria, and ROI estimation.
+
+### Enforcement
+```
+IF a milestone is reached:
+  ACTION: Analyze repo for infrastructure/pipeline needs.
+  ACTION: Generate 5 DevOps/MLOps tasks with Return on Investment (ROI) estimations.
+  ACTION: Save to `infrastructure_planning/milestone_X_tasks.md`.
+  DO NOT: Skip this operational planning step.
+```
+
+---
+
+## RULE 27: Persona Adaptability — MANDATORY
+
+### Rule
+Before initiating significant work or generating explanations, the AI Agent MUST identify or ask "Who is interacting with me? (e.g., CEO, DevOps, MLOps, Fullstack Dev)". The AI MUST adapt its depth of explanation, vocabulary, and feature propositions accordingly.
+
+### Requirements
+1. **CEO/Product Persona**: Focus on "Why". Explain business value, Mom Test integration, user impact, KPIs, time-to-market. Keep technical details abstract (ASCII diagrams).
+2. **DevOps/MLOps Persona**: Focus on "How (Infra)". Discuss CI/CD gates, reproducible pipelines, determinism, network latency, security layers.
+3. **Developer Persona**: Focus on "How (Code)". Discuss architecture, modularity, algorithmic complexity, DRY, SOLID.
+4. **Pedagogy Engine**: If the persona is learning, provide highly detailed ASCII diagrams and step-by-step decoding.
+
+### Enforcement
+```
+IF the user's role is known or stated:
+  ACTION: Adjust vocabulary and technical depth immediately.
+  ACTION: Emphasize the rules most relevant to that persona.
+  DO NOT: Speak to a CEO like a DevOps, or a DevOps like a CEO, unless pedagogical translation is requested.
+```
+
+When in doubt, ASK the user. Do not assume.
+
+---
+
+## RULE 28: Linear Automation and DevOps Review — MANDATORY
+
+### Rule
+At every milestone, the AI Agent MUST automatically create the 5 DevOps/MLOps tasks as Linear issues (Rule 26), assign them to the designated DevOps/MLOps engineer, and continuously track their progress. The AI Agent MUST act as a reviewer when the engineer submits work.
+
+### Requirements
+1. **Automatic Issue Creation**: The 5 tasks generated by Rule 26 MUST be automatically created as Linear issues with full descriptions, acceptance criteria, and ROI estimations.
+2. **Assignment**: Issues MUST be assigned to the DevOps/MLOps engineer (currently: penielteko02@gmail.com in Linear).
+3. **Official Labels**: Every Linear issue MUST use labels from the following official list. Do NOT create ad-hoc labels.
+
+| Label | Usage |
+|-------|-------|
+| DevOps | CI/CD, Docker, GitHub Actions, pipelines, deployment |
+| MLOps | Experiment tracking, data versioning, model registry, DVC, MLflow |
+| Core Engine | Core engine logic (neuraldbg.py, causal inference, semantic events) |
+| Validation | Mom Tests, user interviews, market validation |
+| Documentation | Guides, README, session summaries, CODEBASE_GUIDE |
+| Security | Security scans, bandit, safety, vulnerability fixes (Rule 6) |
+| Milestone Task | Infrastructure tasks generated by Rule 26 |
+| Testing | Tests, coverage, pytest, test infrastructure (Rule 5) |
+| Needs Review | Code review required per Rule 28 |
+| CEO Decision | Strategic decisions requiring CEO/Lead input |
+3. **Progress Tracking**: The AI Agent MUST check Linear issue statuses when resuming sessions and report task progress.
+4. **Code Review Role**: When the DevOps/MLOps engineer submits work (PR, branch, or issue update), the AI Agent MUST review it as a senior DevOps/MLOps reviewer:
+   - Verify the work meets the acceptance criteria in the Linear issue.
+   - Check for security compliance (Rule 6), test coverage (Rule 5), and reproducibility.
+   - Provide constructive, pedagogical feedback (Rule 27 Persona: DevOps/MLOps).
+5. **Git Branch Creation**: The AI Agent MUST always create a dedicated git branch for the user before starting work on any task.
+
+### Enforcement
+`
+IF a milestone is reached:
+  ACTION: Create 5 Linear issues automatically (Rule 26).
+  ACTION: Assign all issues to the DevOps/MLOps engineer.
+  ACTION: Create a git branch for the current milestone work.
+  DO NOT: Skip Linear issue creation or assignment.
+
+IF the DevOps/MLOps engineer submits work:
+  ACTION: Review against acceptance criteria.
+  ACTION: Check security, tests, and reproducibility.
+  ACTION: Provide feedback as a senior reviewer.
+  DO NOT: Accept work that does not meet the documented criteria.
+`
+
+---
+
+## RULE 29: Mandatory Linear Integration — CRITICAL
+
+### Rule
+Every team member and every AI Agent MUST have a working connection to Linear before starting any work session. This is non-negotiable. Without Linear, no task tracking occurs, and work is invisible to the team.
+
+### Integration Methods (by environment)
+
+| Environment | Required Integration |
+|-------------|---------------------|
+| VS Code | Linear extension from VS Code Marketplace |
+| Cursor | Linear extension OR MCP server (linear-mcp-server) |
+| Antigravity | MCP server (linear-mcp-server) |
+| Windsurf | MCP server (linear-mcp-server) |
+| GitHub Codespaces | Linear GitHub integration + MCP server |
+| Terminal-only | Linear CLI or MCP server |
+
+### Requirements
+1. **Session Gate**: The AI Agent MUST verify Linear connectivity at the start of every session. If unavailable, guide the user through setup before proceeding.
+2. **Human Onboarding**: When a new team member joins, the FIRST task is to configure their Linear connection. No code is written until Linear is operational.
+3. **Issue Visibility**: All tasks, bugs, and features MUST be trackable in Linear. Work done outside Linear is considered undocumented and violates traceability (Rule 4).
+
+### Enforcement
+`
+IF Linear connection is not configured:
+  ACTION: STOP all work.
+  ACTION: Guide user through Linear setup for their IDE/environment.
+  DO NOT: Allow any development work without Linear tracking.
+
+IF a new team member joins:
+  ACTION: First task is Linear setup and verification.
+  ACTION: Assign them a test issue to confirm the connection works.
+  DO NOT: Skip this onboarding step.
+`
+
+---
+
+## RULE 30: Mandatory Branch Creation — CRITICAL
+
+### Rule
+NOBODY works on main directly. Before any work begins, the AI Agent MUST create or verify a dedicated git branch for the contributor. Every contributor gets their own branch, named according to a strict convention.
+
+### Branch Naming Convention
+`
+[scope]/[issue-id]-[short-description]
+`
+
+| Scope | Usage | Example |
+|-------|-------|---------|
+| ceo/ | Strategic Development & Rule Management (CEO Only) | ceo/kuro-semantic-event-structures |
+| infra/ | Infrastructure / DevOps / MLOps | infra/milestone-0-setup |
+| feat/ | New feature development | feat/MLO-1-ci-cd-pipeline |
+| fix/ | Bug fix | fix/MLO-3-docker-volume-error |
+| docs/ | Documentation only | docs/update-readme-badges |
+| refactor/ | Code refactoring | refactor/modularize-training |
+
+5. **Global Consistency**: For tasks that span multiple repositories (e.g., rule syncs, platform migrations), the branch name MUST be identical across all affected repositories.
+
+### Requirements
+1. **Session Gate**: At the start of every session, the AI Agent MUST check the current branch. If on main, create or switch to the appropriate working branch immediately.
+2. **One Branch Per Task**: Each Linear issue or task MUST have its own branch. Do not mix unrelated changes.
+3. **Merge via PR Only**: Branches are merged into main exclusively through Pull Requests. Direct pushes to main are forbidden.
+4. **Branch for Every Contributor**: When a new team member starts, the AI Agent MUST create their first working branch before any code is written.
+
+### Enforcement
+`
+IF contributor is on main and about to write code:
+  ACTION: STOP immediately.
+  ACTION: Create a branch following the naming convention.
+  ACTION: Switch to the new branch before any edits.
+  DO NOT: Allow any code changes on main.
+
+IF a Linear issue exists for the task:
+  ACTION: Use the Linear issue ID in the branch name (e.g., feat/MLO-1-ci-cd).
+  DO NOT: Create unnamed or generic branches (e.g., dev, 	est, 	emp).
+`
+
+---
+
+## RULE 31: Codebase Context in Linear Issues -- MANDATORY
+
+### Rule
+Every Linear issue assigned to a team member MUST include a "Codebase Context" section that explains the relevant files, their purpose, and how they connect to the task. The goal is that a contributor who has NEVER seen the repo can understand exactly what to do.
+
+### Requirements
+1. **File Map**: List every file the contributor will need to read or modify, with a one-line explanation of what it does.
+2. **Architecture Briefing**: Explain how the files relate to each other and to the project core architecture (Hub and Spokes).
+3. **Key Concepts**: Define any domain-specific terms (e.g., "vanishing gradients", "causal compression") in plain language.
+4. **Entry Point**: Tell the contributor where to START reading the code (which file, which function).
+5. **Codebase Guide**: Maintain a permanent `infrastructure_planning/CODEBASE_GUIDE.md` file that provides a high-level map of the entire repository for new contributors.
+
+### Enforcement
+```
+IF creating a Linear issue for a team member:
+  ACTION: Include a "Codebase Context" section with file map, architecture briefing, and key concepts.
+  ACTION: Update `infrastructure_planning/CODEBASE_GUIDE.md` if new files are added.
+  DO NOT: Assume the contributor knows the codebase.
+  DO NOT: Create issues that reference files without explaining them.
+```
+
+---
+
+## RULE 32: Mandatory Team Stack -- CRITICAL
+
+### Rule
+Every team member MUST use the following standardized stack. The AI Agent MUST verify compliance at session start and guide setup if any tool is missing.
+
+### Official Stack
+
+| Category | Tool | Purpose | Required |
+|----------|------|---------|----------|
+| **Project Management** | Linear | Issue tracking, sprints, milestones, labels | YES |
+| **IDE (Primary)** | Cursor | AI-assisted coding with MCP and rules support | YES (or alternative below) |
+| **IDE (Alternative)** | VS Code / Antigravity / Windsurf | Coding with AI extensions | YES (one of these) |
+| **Version Control** | Git + GitHub | Source control, PRs, branch protection | YES |
+| **AI Integration** | MCP Server (linear-mcp-server) | Linear access from IDE | YES (Rule 29) |
+| **CI/CD** | GitHub Actions | Automated testing, security, deployment | YES (Rule 26 Task 1) |
+| **Containerization** | Docker + docker-compose | Hermetic dev environments | RECOMMENDED |
+| **Experiment Tracking** | MLflow or W&B | ML experiment logging | RECOMMENDED (MLOps) |
+| **Data Versioning** | DVC | Large file versioning | RECOMMENDED (MLOps) |
+| **Language** | Python 3.10+ | Core development language | YES |
+| **ML Framework** | PyTorch | Deep learning framework | YES |
+| **Testing** | pytest + pytest-cov | Unit tests with coverage | YES (Rule 5) |
+| **Security** | bandit + safety | Static analysis and dependency audit | YES (Rule 6) |
+| **Communication** | Linear comments + GitHub PRs | Async team communication | YES |
+
+### Onboarding Checklist
+When a new team member joins, the AI Agent MUST walk them through this checklist:
+```
+[ ] Git configured (name, email)
+[ ] GitHub access to the repository
+[ ] IDE installed (Cursor recommended)
+[ ] Linear account created and connected (Rule 29)
+[ ] MCP server configured (linear-mcp-server)
+[ ] Python 3.10+ installed
+[ ] Virtual environment created (.venv)
+[ ] Dependencies installed (pip install -e .)
+[ ] Tests passing locally (pytest tests/)
+[ ] Demo running (python demo_vanishing_gradients.py)
+[ ] CODEBASE_GUIDE.md read
+[ ] First working branch created (Rule 30)
+```
+
+### Enforcement
+```
+IF a new team member joins:
+  ACTION: Present the onboarding checklist above.
+  ACTION: Do NOT proceed with code until all YES items are confirmed.
+  DO NOT: Allow coding without Linear + IDE + Git configured.
+
+IF a session starts:
+  ACTION: Verify the contributor has the required stack.
+  ACTION: If missing, guide setup before any work.
+```
+
+---
+
+## RULE 33: Global Rule Parity and Mandatory Cross-Branch Sync -- CRITICAL
+
+### Rule
+The AI rule set (AGENTS.md, AI_GUIDELINES.md, .cursorrules) represents the immutable "Physical Laws" of the repository ecosystem. Rules are **global** and MUST NOT vary between branches. 
+
+### Authority Restriction
+Only branches with the **`ceo/`** scope have the authority to modify rule files. Any rule changes attempted on `infra/`, `feat/`, or other branches MUST be rejected by the AI Agent. Non-CEO branches MUST merge rule updates FROM a `ceo/` branch to maintain parity.
+
+### Mandatory Sync Process
+1. **Rule Modification**: When any rule is added or modified on a `ceo/` branch, the AI Agent MUST immediately:
+   - Commit the change on the current branch.
+   - Switch to all other active development branches (e.g., `infra/milestone-0-setup`, `main`) and merge the changes.
+   - Update the master `kuro-rules` repository.
+2. **Review Enforcement**: No Pull Request (PR) can be merged without explicitly confirming that the branch has the status of the "Current Rule Set" (Rule 33 verification).
+
+
+## RULE 34: Strict Project Isolation (MANDATORY)
+
+### Rule
+When interacting with external tools (Linear, GitHub, etc.), the AI Agent MUST strictly limit its scope to the current project context (e.g., **Sagittarius**).
+
+### Requirements
+1. **Tool Filtering**: Always filter issues, projects, and documents by the specific project name or ID the user is currently focused on.
+2. **Context Integrity**: Do NOT read or comment on issues from other projects unless explicitly cross-referenced.
+3. **Choice Prompt**: If multiple projects are detected, ALWAYS ask the user to confirm which project(s) should be the focus. Never mix everything.
+
+### Enforcement
+```
+IF Linear search returns issues from multiple projects:
+  ACTION: Filter results and present ONLY the relevant context.
+  ACTION: Ask for clarification if project selection is ambiguous.
+```
+
+## RULE 35: CEO Progress Visibility in Linear - MANDATORY
+- The CEO's current work, completed work, and upcoming work MUST be visible in Linear.
+- If this visibility is missing, the agent must stop and restore it before continuing coordinated work.
+
+## RULE 36: Automated Session Status Report - MANDATORY
+- At session start, report current branch, progress, pending Linear work, and blockers.
+- This report is the session gate for coordinated work.
+
+## RULE 37: CEO Real-Time Activity Sync to Linear - CRITICAL
+- Session progress and CEO activity MUST be synchronized to Linear in near real time.
+- If sync is stale or broken, stop and repair visibility first.
+
+## RULE 38: Mandatory Code Review After Commit - MANDATORY
+- Rule work MUST not continue after a push without a completed review.
+- Pending review is a hard blocker for continued rule modification.
+
+## RULE 39: Pre-Marketing Pain-Point Due Diligence - MANDATORY
+Avant tout marketing, outreach, landing page, waitlist, paid acquisition, ou nouveau discours produit sur un pain point, l'agent DOIT executer une recherche desk structuree.
+
+### Verification minimum
+- Executer le prompt local `prompts/perplexity.md` pour les sources citees.
+- Executer le prompt local `prompts/grok.md` pour les signaux sociaux, tweets, blogs recents, et forums.
+- Privilegier les sources 2025-2026, ou une source 2024 seulement si elle est structurelle et officielle.
+- Documenter ce que les sources prouvent, ce qu'elles ne prouvent PAS, et si 3-5 appels experts restent obligatoires.
+- Si le doute restant porte sur la volonte de payer, la conformite, ou l'integration, la desk research ne suffit pas.
+
+### Enforcement
+- Pas de claim marketing presente comme un fait si cette verification n'est pas faite.
+- Pas de "pain point valide" par simple intuition, ni par hype generale de marche.
+- Les templates Perplexity et Grok sont la base par defaut, pas une option.
+
+## RULE 40: CEO Complete Linear Dashboard Visibility - MANDATORY
+- Linear must expose the full CEO dashboard: done, in progress, backlog, blockers, and current progress.
+- If the dashboard is incomplete, stop and restore full visibility.
+## RULE 45: Mandatory Pull Request Analysis and Improvement — MANDATORY
+
+### Rule
+Every Pull Request (PR) MUST be strictly analyzed for code quality, security, and architectural alignment. Minimal compliance is NOT sufficient; the AI Agent MUST proactively identify and implement improvements to technical debt, documentation, or performance.
+
+### Verification Checklist
+```
+AFTER reviewing a PR:
+  1. ANALYZE: Does this diff strictly improve the codebase?
+  2. CHECK: Are all Rule 5/6/18 criteria met?
+  3. IDENTIFY: What are the 2nd/3rd order consequences (Rule 17)?
+  4. IMPROVE: Have we refactored related technical debt?
+```
+
+### Enforcement
+```
+IF a PR only meets minimal requirements without improvement:
+  ACTION: STOP and propose 2+ specific improvements.
+  ACTION: Do NOT approve or merge until improvements are integrated.
+```
