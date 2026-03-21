@@ -237,7 +237,6 @@ When ANY rule file is updated, ALL rule files MUST be updated:
 - copilot-instructions.md
 - GAD.md
 - acquisition_tracker.md
-- PR Analysis & Improvement (Rule 45)
 
 **Enforcement**: SYNC immediately to all files, document in SYNC_LOG.md.
 
@@ -250,6 +249,11 @@ All Outreach/Growth/Mom Test posts MUST be logged in `~/Documents/kuro-rules/acq
 **Enforcement**: Any communication attempt (Reddit, Discord, etc.) must generate an entry in this tracker.
 
 ---
+
+## Project Isolation — CONTEXT ISOLATION (MANDATORY)
+- **Constraint**: When using the Linear MCP or searching issues, you MUST strictly filter for the current active project context.
+- **Reason**: To avoid mixing context with other startup ideas or projects in the same organizational space.
+- **Rule**: If results from multiple projects are returned, ignore everything except the target project. ALWAYS ask the user to confirm the project if ambiguous.
 
 ## Working Demos (MANDATORY)
 
@@ -286,20 +290,7 @@ Before transitioning to the next phase, the user MUST demonstrate deep understan
 
 ---
 
-## RULE 24: Marketing & Outreach Guardian - MANDATORY
-### Rule
-Before any public release or marketing campaign, the AI Agent MUST ensure proper community outreach, feedback collection channels, and communication templates are prepared.
-### Requirements
-1. **Community Identification**: Identify at least 3 relevant communities or forums where the product would be discussed.
-2. **Feedback Channels**: Establish clear channels for user feedback such as Discord, GitHub Issues, or survey forms.
-3. **Communication Templates**: Prepare outreach templates for announcements, bug reports, and feature requests.
-4. **Launch Checklist**: Verify all marketing materials are reviewed for accuracy and current product scope.
-### Enforcement
-- No public launch without an active response path.
-- No marketing promise beyond the validated product scope.
----
-
-## RULE 25: MLOps/DevOps Collaboration - MANDATORY
+## RULE 25: MLOps/DevOps Collaboration — MANDATORY
 
 ### Rule
 When interacting with a DevOps or MLOps engineer on this repository, the AI Agent MUST shift its focus to infrastructure, delivery, and reliability.
@@ -584,37 +575,5 @@ Only branches with the **`ceo/`** scope have the authority to modify rule files.
    - Switch to all other active development branches (e.g., `infra/milestone-0-setup`, `main`) and merge the changes.
    - Update the master `kuro-rules` repository.
 2. **Review Enforcement**: No Pull Request (PR) can be merged without explicitly confirming that the branch has the status of the "Current Rule Set" (Rule 33 verification).
-
-## RULE 34: Strict Project Isolation (MANDATORY)
-
-- Limit all Linear and external-tool work to the active project only.
-- Filter mixed search results and ask for clarification if the project is ambiguous.
-
-## RULE 35: CEO Progress Visibility in Linear (MANDATORY)
-
-- CEO tasks, progress, and milestones must remain visible in Linear.
-- Missing visibility is a blocker.
-
-## RULE 36: Automated Session Status Report (MANDATORY)
-
-- Start each session with current branch, progress, pending tasks, and blockers.
-
-## RULE 37: CEO Real-Time Activity Sync to Linear (CRITICAL)
-
-- Keep CEO activity and progress synchronized to Linear in near real time.
-
-## RULE 38: Mandatory Code Review After Commit (MANDATORY)
-
-- Do not continue rule work after a push until review is complete.
-
-## RULE 39: Pre-Marketing Pain-Point Due Diligence (MANDATORY)
-
-- Run the project-local due-diligence prompts in `prompts/perplexity.md` and `prompts/grok.md` before marketing claims.
-
-## RULE 40: CEO Complete Linear Dashboard Visibility (MANDATORY)
-
-- Linear must show the full CEO dashboard: done, in progress, backlog, blockers, and current progress.
-
-
 
 

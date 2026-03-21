@@ -1,4 +1,4 @@
-﻿I need to update the scorecard.md with current validation scores based on the evidence gathered. Let me write a comprehensive scorecard based on the research and Mom Test results.```# Scorecard
+I need to update the scorecard.md with current validation scores based on the evidence gathered. Let me write a comprehensive scorecard based on the research and Mom Test results.```# Scorecard
 
 Date: 2026-03-11
 Project: Helium
@@ -10,28 +10,28 @@ Weighted points formula: `weight * score / 5`
 
 | Axis | Weight | Score | What is proven | What is still missing |
 | --- | ---: | ---: | --- | --- |
-| Urgence | 20 | 2 | AWS/Vast.ai usage confirms GPU cost pain point (Mom Test #1), multiple competitors validate market demand | Need 4 more Mom Test interviews to confirm urgency pattern |
-| Budget signal | 20 | 1 | Competitor market exists (Bittensor, Gensyn, Akash) but no direct buyer interview yet | Need expert calls to confirm budget owner and procurement path |
+| Urgence | 20 | 3 | AWS/Vast.ai usage confirms GPU cost pain point (Mom Test #1), AWS p5e instances up to $39.80/hr | Need 4 more Mom Test interviews to confirm urgency pattern |
+| Budget signal | 20 | 2 | Akash Network actively monetizing decentralized AI GPU rental. Market exists. | Need expert calls to confirm budget owner and procurement path |
 | Speed to first contract | 15 | 1 | Technical stack defined (Rust, PoUW) but no pilot offer defined | Need L2 expert confirmation on integration path |
 | Regulatory friction | 15 | 2 | Blockchain regulatory environment varies by geo, crypto tokens face scrutiny | Need legal analysis for token classification |
 | Integration load | 10 | 1 | Users currently use Docker + cloud (AWS/Vast.ai) — suggests integration complexity | Need to understand current workflow in detail |
 | Platform dependency | 10 | 2 | Decentralized by design — no single platform dependency, but relies on GPU hardware availability | Need to assess GPU miner onboarding complexity |
-| Competitive intensity | 5 | 3 | Bittensor, Gensyn, Akash, Render, Qubic, DeepBrain Chain all active — high competition | Need differentiation strategy |
+| Competitive intensity | 5 | 3 | Bittensor, Gensyn (3-layer verification), Akash all active — high competition | Need differentiation strategy |
 | Defensability | 5 | 1 | Open-source blockchain — low moat unless network effects kick in fast | Need to identify unique value proposition |
 
 ## Weighted Score Calculation
 
 | Axis | Weight | Score | Weighted Points |
 | --- | ---: | ---: | ---: |
-| Urgence | 20 | 2 | 8.0 |
-| Budget signal | 20 | 1 | 4.0 |
+| Urgence | 20 | 3 | 12.0 |
+| Budget signal | 20 | 2 | 8.0 |
 | Speed to first contract | 15 | 1 | 3.0 |
 | Regulatory friction | 15 | 2 | 6.0 |
 | Integration load | 10 | 1 | 2.0 |
 | Platform dependency | 10 | 2 | 4.0 |
 | Competitive intensity | 5 | 3 | 3.0 |
 | Defensability | 5 | 1 | 1.0 |
-| **TOTAL** | **100** | | **31.0 / 100** |
+| **TOTAL** | **100** | | **39.0 / 100** |
 
 ## Stage gates
 
@@ -63,13 +63,13 @@ Weighted points formula: `weight * score / 5`
 ## Evidence Summary
 
 ### Positive Signals
-- Market exists: 7+ competitors active in decentralized AI compute space
-- Pain point validated: Mom Test #1 confirms AWS/Vast.ai usage for XXL models
-- Technology feasible: Rust + PoUW approach documented, competitors implementing similar solutions
+- Market exists: 7+ competitors active in decentralized AI compute space, with active monetization (e.g. Akash Network)
+- Pain point validated: Cloud GPU prices increasing (AWS p5e up to $39.80/hr), and Mom Test #1 confirms AWS/Vast.ai usage for XXL models
+- Technology feasible: Rust + PoUW approach documented; Gensyn proves 3-layer trustless ML verification is feasible
 - Bootstrap affordable: Phase 1 (prototyping) near-zero cost
 
 ### Negative Signals
-- High competition: Bittensor, Gensyn, Akash already have market presence
+- High competition: Bittensor, Gensyn, Akash already have market presence with sophisticated tech (Gensyn's verification)
 - Low defensibility: Open-source blockchain has limited moat
 - Integration unknown: Need to understand Docker/cloud workflow complexity
 

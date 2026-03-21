@@ -1,4 +1,4 @@
-﻿Helium,Competitor Bittensor (TAO) operates AI marketplace P2P,https://bittensor.com,2026-02-28,Global,existence du marche,high,Market exists for decentralized AI compute,How does Helium differentiate from Bittensor?
+Helium,Competitor Bittensor (TAO) operates AI marketplace P2P,https://bittensor.com,2026-02-28,Global,existence du marche,high,Market exists for decentralized AI compute,How does Helium differentiate from Bittensor?
 Helium,Competitor Gensyn building deep learning compute L1,https://gensyn.ai,2026-02-28,Global,existence du marche,high,Investment flowing into decentralized AI compute,What is Gensyn's verification mechanism?
 Helium,Competitor Akash Network active decentralized cloud,https://akash.network,2026-02-28,Global,existence du marche,high,Users pay for decentralized compute today,How does tokenomics compare?
 Helium,Competitor Render Network active for 3D rendering extending to AI,https://rendernetwork.com,2026-02-28,Global,existence du marche,high,GPU compute marketplace validated,Is AI training a natural extension?
@@ -13,3 +13,7 @@ Helium,PoUW verification requires zk-ML or cross-verification,research/analysis_
 Helium,Rust recommended for blockchain development 2026+,research/implementation_plan.md,2026-02-28,Global,faisabilite,high,Technology stack is mature,Development effort estimation needed
 Helium,Bootstrap Phase 1 cost near-zero (prototyping),research/bootstrapped_feasibility.md,2026-02-28,Global,faisabilite,high,Initial development is affordable,Phase 2/3 funding strategy needed
 Helium,Security audits cost 50k-200k USD for mainnet,research/bootstrapped_feasibility.md,2026-02-28,Global,faisabilite,medium,Mainnet launch is expensive,Can we fund via token sale?
+Helium,Cost of AWS GPU instances increasing; p5e instances raised to $39.80/hr,desk_research,2026-03-21,Global,urgence,high,Cloud GPU pricing is worsening,Will users migrate to untested networks just for price?
+Helium,Decentralized GPU networks offer 50-70% cost reduction vs AWS,desk_research,2026-03-21,Global,existence du marche,high,Price arbitrage is the main driver,Can decentralized networks match AWS SLAs?
+Helium,Gensyn offers 3-layer verification (Probabilistic Proof-of-Learning) for ML training,desk_research,2026-03-21,Global,faisabilite,high,Trustless ML training is technically feasible,What is the compute overhead of this verification?
+Helium,Akash Network is actively used for AI/ML workloads and GPU rental,desk_research,2026-03-21,Global,existence du marche,high,Users pay for decentralized compute today,How to differentiate Helium from Akash?

@@ -12,9 +12,6 @@
 8.  **Instructional Tone**: Explain technical concepts simply (pedagogical protocol).
 9.  **Hard Milestone Lock**: STOP work at 25, 50, 75, 90, 95% until validated.
 10. **Market Intelligence**: Research 3+ sources at milestones (Rule 21).
-11. **Pre-Marketing Due Diligence**: Before marketing or new product claims, run the project-local prompts in `prompts/` and document the verdict.
-12. **Personal Quant Mode (PQPO)**: Rule 2/14/21/24 Bypassed.
-13. **PR Analysis & Improvement**: PRs strictly analyzed and improved (Rule 45).
 
 ---
 
@@ -43,25 +40,25 @@ Protect the core of your application from the noise of the outside world.
 
 ---
 
-## Critical Thinking ââ¬â "Devil's Advocate" Mode
+## Critical Thinking — "Devil's Advocate" Mode
 You are a **co-engineer**, not a typist. Do not be a passive executor.
 
 **Before implementation:**
-- **"Does this actually help users?"** ââ¬â Push back on features that don't solve real problems.
-- **"Is there a simpler way?"** ââ¬â If 10 lines replace 100, say so.
-- **"What breaks?"** ââ¬â Proactively identify edge cases and failure modes.
+- **"Does this actually help users?"** — Push back on features that don't solve real problems.
+- **"Is there a simpler way?"** — If 10 lines replace 100, say so.
+- **"What breaks?"** — Proactively identify edge cases and failure modes.
 
 **During implementation:**
-- **Flag code smells** ââ¬â Dead code, unclear naming, duplication ââ¬â call it out.
-- **Flag security issues** ââ¬â Hardcoded secrets, unvalidated input, exposed endpoints.
-- **Question scope creep** ââ¬â If a task grows beyond its intent, pause and ask to split.
+- **Flag code smells** — Dead code, unclear naming, duplication — call it out.
+- **Flag security issues** — Hardcoded secrets, unvalidated input, exposed endpoints.
+- **Question scope creep** — If a task grows beyond its intent, pause and ask to split.
 
 **After implementation:**
-- **Identify technical debt** ââ¬â If you cut corners, document it explicitly.
+- **Identify technical debt** — If you cut corners, document it explicitly.
 
 ---
 
-## Advanced Testing & Analysis ââ¬â MANDATORY
+## Advanced Testing & Analysis — MANDATORY
 High-quality code requires proactive testing and deep analysis.
 - **Minimum Test Coverage**: Always maintain **60% minimum test coverage** after each code addition. No exceptions.
 - **Testing Pyramid**: Allocate testing effort following the pyramid: **70% Unit Tests**, **20% Integration Tests**, **10% E2E Tests**.
@@ -76,12 +73,12 @@ High-quality code requires proactive testing and deep analysis.
 
 ---
 
-## Security Hardening ââ¬â Non-Negotiable
+## Security Hardening — Non-Negotiable
 Every project must be secure by default.
 - **Never** log, print, or commit API keys, tokens, or secrets.
 - **Always** validate and sanitize user input to prevent injection.
 - **Always** protect against path traversal (no unauthorized file access).
-- **Always** use environment variables for secrets ââ¬â never hardcode.
+- **Always** use environment variables for secrets — never hardcode.
 - **Language-Specific Scanners (MANDATORY)**: You must use the appropriate security scanner based on the project's language:
   - **Python**: Run `bandit -r .` et `safety check`.
   - **Rust**: Run `cargo audit` et `cargo clippy`.
@@ -92,13 +89,13 @@ Every project must be secure by default.
 
 ---
 
-## Formula Clarity ââ¬â NO LATEX
+## Formula Clarity — NO LATEX
 - **Constraint**: Do NOT use `$` LaTeX notation in chat (it doesn't render visually for the user).
 - **Rule**: Use plain text, ASCII art, or clear descriptive names for math (e.g., "Moyenne / Mean (mu)" instead of mu).
 
 ---
 
-## Project Progress Tracking ââ¬â MANDATORY
+## Project Progress Tracking — MANDATORY
 Every project MUST track its completion percentage in SESSION_SUMMARY.md.
 
 - **Progress Score**: Include a `**Progress**: X%` line at the end of each SESSION_SUMMARY.md entry.
@@ -127,7 +124,7 @@ Every project MUST track its completion percentage in SESSION_SUMMARY.md.
 
 ---
 
-## Traceability ââ¬â "Always Leave a Trail"
+## Traceability — "Always Leave a Trail"
 Every AI session MUST produce a traceable record of what was done. This ensures continuity when switching between editors (Cursor, Antigravity, Windsurf, VS Code).
 
 **Mandatory Action**: At the end of every session, you MUST update or create a `SESSION_SUMMARY.md` file in the project root. This file is the primary source of truth for continuity.
@@ -178,7 +175,7 @@ Every AI session MUST produce a traceable record of what was done. This ensures 
 
 ---
 
-## Documentation & User Experience ââ¬â MANDATORY
+## Documentation & User Experience — MANDATORY
 - **README Badges**: Always add necessary badges to README (build status, coverage, version, license, etc.).
 - **Update README & Changelog**: Always update README.md and CHANGELOG.md after significant changes.
 - **Zero Friction**: Always ensure zero friction for users when using tools. Clear documentation, simple setup, intuitive UX.
@@ -268,24 +265,20 @@ To ensure strict adherence to rules:
 4.  **No Silent Failures**: If a step fails (e.g., artifact update), the Agent MUST report it and retry, never ignore it.
 5.  **Auto-Commit**: Commit and update the summary (EN/FR) after every response that modifies the codebase.
 
-## RULE 24: Marketing & Outreach Guardian - MANDATORY
+---
 
-### Rule
-Before any public release or marketing campaign, the AI Agent MUST ensure proper community outreach, feedback collection channels, and communication templates are prepared.
-
-### Requirements
-1. **Community Identification**: Identify at least 3 relevant communities or forums where the product would be discussed.
-2. **Feedback Channels**: Establish clear channels for user feedback such as Discord, GitHub Issues, or survey forms.
-3. **Communication Templates**: Prepare outreach templates for announcements, bug reports, and feature requests.
-4. **Launch Checklist**: Verify all marketing materials are reviewed for accuracy and current product scope.
-
-### Enforcement
-- No public launch without an active response path.
-- No marketing promise beyond the validated product scope.
+---
+15. **Strict Project Isolation**: Scope limited to current project context only? [YES/NO]
 
 ---
 
-## RULE 25: MLOps/DevOps Collaboration ââ¬â MANDATORY
+## RULE 34: Strict Project Isolation (MANDATORY)
+
+- **Rule**: Limit scope to the current active project context only.
+- **Filter**: Filter Linear issues by project name/ID.
+- **Action**: Ignore unrelated projects. Ask for clarification if project selection is ambiguous.
+
+## RULE 25: MLOps/DevOps Collaboration — MANDATORY
 
 ### Rule
 When interacting with a DevOps or MLOps engineer on this repository, the AI Agent MUST shift its focus to infrastructure, delivery, and reliability.
@@ -308,7 +301,7 @@ IF providing MLOps/DevOps assistance:
 
 ---
 
-## RULE 26: DevOps/MLOps Milestone Task Generation ââ¬â MANDATORY
+## RULE 26: DevOps/MLOps Milestone Task Generation — MANDATORY
 
 ### Rule
 At every progress milestone (10%, 25%, 50%, 75%, 90%, 95%), the AI Agent MUST strictly analyze the repository's current state and propose exactly **5 concrete DevOps or MLOps tasks**.
@@ -331,7 +324,7 @@ IF a milestone is reached:
 
 ---
 
-## RULE 27: Persona Adaptability ââ¬â MANDATORY
+## RULE 27: Persona Adaptability — MANDATORY
 
 ### Rule
 Before initiating significant work or generating explanations, the AI Agent MUST identify or ask "Who is interacting with me? (e.g., CEO, DevOps, MLOps, Fullstack Dev)". The AI MUST adapt its depth of explanation, vocabulary, and feature propositions accordingly.
@@ -354,7 +347,7 @@ When in doubt, ASK the user. Do not assume.
 
 ---
 
-## RULE 28: Linear Automation and DevOps Review ââ¬â MANDATORY
+## RULE 28: Linear Automation and DevOps Review — MANDATORY
 
 ### Rule
 At every milestone, the AI Agent MUST automatically create the 5 DevOps/MLOps tasks as Linear issues (Rule 26), assign them to the designated DevOps/MLOps engineer, and continuously track their progress. The AI Agent MUST act as a reviewer when the engineer submits work.
@@ -400,7 +393,7 @@ IF the DevOps/MLOps engineer submits work:
 
 ---
 
-## RULE 29: Mandatory Linear Integration ââ¬â CRITICAL
+## RULE 29: Mandatory Linear Integration — CRITICAL
 
 ### Rule
 Every team member and every AI Agent MUST have a working connection to Linear before starting any work session. This is non-negotiable. Without Linear, no task tracking occurs, and work is invisible to the team.
@@ -436,7 +429,7 @@ IF a new team member joins:
 
 ---
 
-## RULE 30: Mandatory Branch Creation ââ¬â CRITICAL
+## RULE 30: Mandatory Branch Creation — CRITICAL
 
 ### Rule
 NOBODY works on main directly. Before any work begins, the AI Agent MUST create or verify a dedicated git branch for the contributor. Every contributor gets their own branch, named according to a strict convention.
@@ -571,53 +564,4 @@ Only branches with the **`ceo/`** scope have the authority to modify rule files.
    - Update the master `kuro-rules` repository.
 2. **Review Enforcement**: No Pull Request (PR) can be merged without explicitly confirming that the branch has the status of the "Current Rule Set" (Rule 33 verification).
 
-## RULE 34: Strict Project Isolation - MANDATORY
-
-### Rule
-When interacting with external tools such as Linear or GitHub, the AI Agent MUST strictly limit scope to the current project context.
-
-### Enforcement
-- Filter issues, projects, tickets, and documents to the active project only.
-- If multiple projects are returned, ask for confirmation and ignore unrelated context.
-
-## RULE 35: CEO Progress Visibility in Linear - MANDATORY
-- The CEO's current, completed, and upcoming work MUST be visible in Linear.
-- If visibility is missing, stop and restore it before continuing coordinated work.
-
-## RULE 36: Automated Session Status Report - MANDATORY
-- At session start, report current branch, progress, pending Linear work, and blockers.
-- This report is the session gate for coordinated work.
-
-## RULE 37: CEO Real-Time Activity Sync to Linear - CRITICAL
-- Session progress and CEO activity MUST be synchronized to Linear in near real time.
-- If sync is stale or broken, stop and repair visibility first.
-
-## RULE 38: Mandatory Code Review After Commit - MANDATORY
-- Rule work MUST not continue after a push without a completed review.
-- Pending review is a hard blocker for continued rule modification.
-
-## RULE 39: Pre-Marketing Pain-Point Due Diligence - MANDATORY
-- Before any marketing, outreach, waitlist, landing page, or strong product claim, run the project-local prompt in `prompts/perplexity.md`.
-- Run the project-local prompt in `prompts/grok.md` to collect tweets, blogs, forums, and public chatter.
-- Prefer 2025-2026 signals and document what proves problem existence, urgency, safety or compliance risk, and what does NOT prove willingness to pay.
-- If buying behavior, compliance, or integration is still unclear, require 3-5 expert calls before stronger marketing claims.
-
-## RULE 40: CEO Complete Linear Dashboard Visibility - MANDATORY
-- Linear must expose the full CEO dashboard: done, in progress, backlog, blockers, and current progress.
-- If the dashboard is incomplete, stop and restore full visibility.
-
-## RULE 41: Personal Quant Mode (PQPO)  MANDATORY
-
-- **Context**: When the CEO is in "Personal Quant Mode" (PQPO), certain overhead rules are bypassed for speed.
-- **Bypass**: Rules 2 (Mom Test), 14 (Periodic Validation), 21 (Intel Harvester), and 24 (Marketing Outreach) are suspended.
-- **Requirement**: All changes MUST still be documented in AGENTS.md and GAD.md.
-
-## RULE 45: Mandatory Pull Request Analysis and Improvement  MANDATORY
-
-### Rule
-Every Pull Request (PR) MUST be strictly analyzed for code quality, security, and architectural alignment. Minimal compliance is NOT sufficient; the AI Agent MUST proactively identify and implement improvements to technical debt, documentation, or performance.
-
-### Enforcement
-- STOP and perform mandatory improvement cycle.
-- Do NOT merge until 2+ improvements are integrated.
 

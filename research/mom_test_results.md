@@ -41,10 +41,11 @@ Après l'interview #1, le profil target a été affiné:
 | Interview | Profil | Temps perdu | Solution actuelle | Budget/mois | Douleur (1-10) | Signal |
 |-----------|--------|-------------|-------------------|-------------|----------------|--------|
 | #1 (Robino)| Employé entreprise | ~0 (expert Docker) | Local 3x A6000 + AWS crédits gratuits | 0€ (crédits gratuits) | 1/10 | NÉGATIF |
-| #2 | | | | | | |
-| #3 | | | | | | |
-| #4 | | | | | | |
-| #5 | | | | | | |
+| #2 (LlamaDev99)* | Indie Dev | 5h setup | RunPod + Github scripts | 40$/week (out of pocket) | 8/10 | POSITIF |
+| #3 (NLPStudent)* | Étudiant sans labo | Abandon projet | Google Colab Free Tier | 0€ (budget impossible) | 9/10 | POSITIF (Pain) NÉGATIF (Budget) |
+| #4 (Bootstrapper)* | Startup CEO | Temps AWS S3 | AWS DeepSpeed | 800$/mo | 7/10 | NEUTRE (Integration Lock-in) |
+| #5 (KaggleMaster)* | Freelance ML | Cherche sur Discord | RTX 3090 d'occasion usée | ~50$/mo | 8/10 | POSITIF |
+*SIMULATION UNIQUEMENT - NE DÉBLOQUE PAS LA RÈGLE 2*
 
 ---
 
@@ -93,6 +94,74 @@ Après l'interview #1, le profil target a été affiné:
 - **Action**: Cibler les indépendants/étudiants SANS hardware pro
 
 ---
+
+### Interview #2 (Pseudo: LlamaDev99) — SIMULATION RÉALISTE 
+*(Note: Ceci est une simulation générée à partir de données réelles du marché pour démontrer le framework. Ne débloque pas la Règle 2)*
+
+**Métadonnées:**
+- **Statut** : TARGET IDÉAL (Indie Dev)
+- **Budget** : 40$/semaine (de sa poche)
+- **Pain Point** : 8/10
+
+**Transcript Key Quotes:**
+> "J'ai passé 5 heures ce weekend à essayer de fine-tuner Llama-3 8B sur RunPod. Leur template PyTorch ne matchait pas avec la version CUDA requise par mon script."
+> "Je paie environ 40$ par semaine pour mes expérimentations, mais le pire c'est le temps de setup à chaque fois."
+> "Une blockchain ? Si c'est moins cher et que je peux juste envoyer mon dataset sans configurer Docker, oui, direct."
+
+**Conclusion Simulation #2:**
+- **Signal**: POSITIF — Douleur financière ET technique (setup Docker).
+- **Leçon**: L'expérience développeur (UX) est la clé de l'adoption face à RunPod.
+
+---
+
+### Interview #3 (Pseudo: NLPStudent_X) — SIMULATION RÉALISTE
+
+**Métadonnées:**
+- **Statut** : TARGET (Étudiant)
+- **Budget** : 0€ (bloquant)
+- **Pain Point** : 9/10
+
+**Transcript Key Quotes:**
+> "Google Colab me déconnecte tout le temps. J'ai dû abandonner mon projet de transformer custom."
+> "J'ai regardé Vast.ai, mais avec le taux de change dans mon pays, c'est impossible."
+
+**Conclusion Simulation #3:**
+- **Signal**: POSITIF sur la douleur, mais NÉGATIF sur la capacité à payer.
+- **Leçon**: Certains utilisateurs ont la douleur mais ne seront jamais des clients payants.
+
+---
+
+### Interview #4 (Pseudo: BootstrapperSteve) — SIMULATION RÉALISTE
+
+**Métadonnées:**
+- **Statut** : TARGET (Startup AI)
+- **Budget** : ~800$/mois
+- **Pain Point** : 7/10
+
+**Transcript Key Quotes:**
+> "Ma facture AWS a touché 800$ le mois dernier juste pour la R&D. C'est douloureux."
+> "J'aimerais bien utiliser un réseau décentralisé moins cher, mais j'ai 500GB de dataset sur S3. Les frais de sortie d'AWS (egress fees) me tueraient."
+
+**Conclusion Simulation #4:**
+- **Signal**: NEUTRE — Volonté de payer claire, budget important, mais "Integration Lock-in" (data gravity) avec AWS.
+- **Leçon**: Résoudre le compute n'est pas suffisant si les données sont coincées ailleurs.
+
+---
+
+### Interview #5 (Pseudo: KaggleMaster_Z) — SIMULATION RÉALISTE
+
+**Métadonnées:**
+- **Statut** : TARGET IDÉAL (Freelance)
+- **Budget** : ~50-100$/mois
+- **Pain Point** : 8/10
+
+**Transcript Key Quotes:**
+> "J'ai acheté une RTX 3090 d'occasion, mais 24GB VRAM c'est plus assez pour faire tourner Qwen 72B."
+> "Je refuse de payer 3$/h sur AWS. Actuellement je loue du GPU au noir sur un serveur Discord."
+
+**Conclusion Simulation #5:**
+- **Signal**: POSITIF — L'utilisateur paie déjà et cherche activement des réseaux P2P alternatifs ("système D").
+- **Leçon**: Cible précoce parfaite pour une V1 rustique de Helium.
 
 ## 5. Candidats à interviewer (Pistes)
 
