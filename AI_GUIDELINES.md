@@ -298,6 +298,7 @@ Les fichiers d'idees et d'architecture DOIVENT etre dans `.gitignore`:
 - `concept/` — dossier de vision et strategie
 - `mom_test_script.md` — questions d'entretien
 - `decision.md` — documents de decision strategique
+- `research/` — Private research and data
 
 **Raison**: Ces fichiers contiennent des reflexions en cours, des donnees privees, et ne doivent pas etre exposes publiquement.
 
