@@ -1,0 +1,28 @@
+[package]
+name = "helium-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+
+# P2P Discovery
+libp2p = { workspace = true }
+libp2p-swarm = { workspace = true }
+libp2p-mdns = { workspace = true }
+
+# Async runtime
+tokio-stream = "0.1"
+futures = "0.3"
+uuid = { workspace = true }
+chrono = { workspace = true }
+
+[dev-dependencies]
+tokio-test = "0.4"

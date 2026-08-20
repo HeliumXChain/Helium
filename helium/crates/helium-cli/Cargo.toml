@@ -1,0 +1,36 @@
+[package]
+name = "helium-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "helium"
+path = "src/main.rs"
+
+[dependencies]
+helium-core = { path = "../helium-core" }
+helium-tunnel = { path = "../helium-tunnel" }
+helium-vm = { path = "../helium-vm" }
+
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# CLI
+clap = { workspace = true }
+indicatif = { workspace = true }
+console = { workspace = true }
+dialoguer = "0.11"
+
+# Database
+rusqlite = { workspace = true }
+
+# Config
+dirs = "5.0"
+toml = "0.8"

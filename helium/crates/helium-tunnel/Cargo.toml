@@ -1,0 +1,25 @@
+[package]
+name = "helium-tunnel"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+tokio = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+
+# Crypto for WireGuard
+ring = { workspace = true }
+base64 = "0.21"
+hex = "0.4"
+
+# Networking
+socket2 = "0.5"
+ipnet = "2.9"
+
+[dev-dependencies]
+tokio-test = "0.4"

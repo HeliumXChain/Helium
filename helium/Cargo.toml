@@ -1,0 +1,55 @@
+[workspace]
+members = [
+    "crates/helium-core",
+    "crates/helium-tunnel", 
+    "crates/helium-vm",
+    "crates/helium-cli",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Helium Team"]
+license = "MIT"
+repository = "https://github.com/helium-project/helium"
+
+[workspace.dependencies]
+tokio = { version = "1.35", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tokio-stream = "0.1"
+futures = "0.3"
+uuid = { version = "1.6", features = ["v4"] }
+which = "6.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+# P2P & Networking
+libp2p = { version = "0.53", features = ["tokio", "tcp", "noise", "yamux", "mdns", "kad"] }
+libp2p-swarm = "0.44"
+libp2p-mdns = "0.45"
+
+# Crypto & Security
+ring = "0.17"
+wireguard-vpn = "0.1"
+
+# VM & Firecracker
+firecracker-microvm = { git = "https://github.com/firecracker-microvm/firecracker", tag = "v1.5.1" }
+
+# Database
+rusqlite = { version = "0.30", features = ["bundled", "chrono"] }
+
+# CLI
+clap = { version = "4.4", features = ["derive"] }
+indicatif = "0.17"
+console = "0.15"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

@@ -1,0 +1,67 @@
+# Rust build artifacts
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Helium configuration (contains private keys)
+config/
+*.pem
+*.key
+secrets/
+
+# Firecracker artifacts
+*.ext4
+*.kernel
+vmlinux
+firecracker
+jailer
+
+# Runtime data
+data/
+*.db
+*.sqlite
+*.sqlite3
+logs/
+*.log
+
+# Test artifacts
+tmp/
+temp/
+*.tmp
+
+# Coverage
+coverage/
+*.profraw
+*.profdata
+
+# Documentation build
+doc/book/
+
+# Private strategy files (Rule 62)
+PLAN.md
+ROADMAP.md
+ideas.md
+mom_test_results.md
+validation_evidence.md
+
+# Build outputs
+/dist/
+/build/
+*.tar.gz
+*.zip
+
+# Environment
+.env
+.env.local
