@@ -13,6 +13,8 @@ sync_summary.py
 # These files MUST never be committed to public repositories
 
 PLAN.md
+SESSION_SUMMARY.md
+decision-memo.md
 ROADMAP.md
 PRD.md
 ideas.md
@@ -108,6 +110,7 @@ desktop.ini
 # ============================================================================
 # Session summaries may contain sensitive context
 
+SESSION_SUMMARY.md
 SESSION_SUMMARY.docx
 SESSION_SUMMARY_backup_*.md
 .sync_backup/
