@@ -15,7 +15,8 @@ sync_summary.py
 PLAN.md
 SESSION_SUMMARY.md
 decision-memo.md
-ROADMAP.md
+# ROADMAP.md deliberately NOT ignored per R106 (public roadmap)
+# ROADMAP.md
 PRD.md
 ideas.md
 mom_test_results.md
