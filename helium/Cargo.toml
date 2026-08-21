@@ -47,6 +47,7 @@ rusqlite = { version = "0.30", features = ["bundled", "chrono"] }
 clap = { version = "4.4", features = ["derive"] }
 indicatif = "0.17"
 console = "0.15"
+tabled = { version = "0.15", features = ["derive"] }
 
 [profile.release]
 opt-level = 3
