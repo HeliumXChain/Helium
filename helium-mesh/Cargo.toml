@@ -98,6 +98,6 @@ section = "net"
 priority = "optional"
 depends = "wireguard-tools, iproute2"
 assets = [
-  ["../target/release/helium", "usr/bin/", "755"],
+  ["target/release/helium", "usr/bin/", "755"],
   ["../ROADMAP.md", "usr/share/doc/helium-mesh/", "644"],
 ]
