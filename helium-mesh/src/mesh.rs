@@ -241,7 +241,6 @@ impl MeshManager {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
-    // Tests would go here with mocked filesystem
+    // Filesystem-backed tests live in storage/market (TempDir); mesh logic
+    // is covered live via CLI (join/invite/leave).
 }

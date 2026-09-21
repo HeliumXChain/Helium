@@ -56,7 +56,7 @@ jobs:
           key: release-${{ matrix.target }}
 
       - name: Build helium
-        run: cargo build --release --locked -p helium-mesh --target ${{ matrix.target }}
+        run: cargo build --release --locked --manifest-path helium-mesh/Cargo.toml -p helium-mesh --target ${{ matrix.target }}
 
       - name: Package (unix)
         if: matrix.os != 'windows'
