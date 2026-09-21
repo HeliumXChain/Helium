@@ -66,7 +66,7 @@ jobs:
           TAG="${GITHUB_REF_NAME}"
           STAGE="helium-${TAG}-${{ matrix.os }}-${{ matrix.arch }}"
           mkdir -p "$STAGE"
-          cp "target/${{ matrix.target }}/release/helium" "$STAGE/helium"
+          cp "helium-mesh/target/${{ matrix.target }}/release/helium" "$STAGE/helium"
           chmod +x "$STAGE/helium"
           cp README.md "$STAGE/" 2>/dev/null || true
           cp LICENSE "$STAGE/" 2>/dev/null || true
@@ -80,7 +80,7 @@ jobs:
           $TAG = "${{ github.ref_name }}"
           $STAGE = "helium-$TAG-windows-x86_64"
           New-Item -ItemType Directory -Path $STAGE | Out-Null
-          Copy-Item "target/${{ matrix.target }}/release/helium.exe" "$STAGE/helium.exe"
+          Copy-Item "helium-mesh/target/${{ matrix.target }}/release/helium.exe" "$STAGE/helium.exe"
           if (Test-Path README.md) { Copy-Item README.md $STAGE/ }
           if (Test-Path LICENSE) { Copy-Item LICENSE $STAGE/ }
           Compress-Archive -Path "$STAGE/*" -DestinationPath "$STAGE.zip"
