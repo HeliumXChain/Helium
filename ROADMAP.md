@@ -2,7 +2,7 @@
 
 **Vision**: Reseaux P2P prives pour partager RAM/GPU entre devs de confiance. Tunnel chiffre WireGuard + microVM Firecracker isolee + credits locaux. Alternative simple a Vast.ai (strangers) et AWS (10x cher) pour le cas "besoin de 32GB pour fine-tuner, un ami a 64GB idle".
 
-**Status**: MVP Technique en cours — 25% (architecture Rust prete, POC a valider)
+**Status**: MVP Technique VALIDE — gates S1 (tunnel P2P), S2 (boot microVM), S3 (2 transactions market) passes. Binaire `v0.1.0-alpha13` : Linux x86_64/aarch64, macOS, Windows + .deb. Prochaine etape : v0.2 mesh persistant.
 **License**: MIT (prevu)
 **Stack**: Rust, libp2p, WireGuard, Firecracker, SQLite, Tokio
 
@@ -23,26 +23,31 @@ CLI (Rust) -> Discovery (libp2p DHT privee) -> Matching (SQLite) -> Tunnel (Wire
 
 ## Version Roadmap
 
-### v0.1 — MVP Technique (2026-08-25 -> 2026-09-22) — EN COURS
+### v0.1 — MVP Technique (VALIDE 2026-09-21)
 
-- [x] Workspace Rust 4 crates (core/tunnel/vm/cli)
-- [x] Discovery service mock + tests
-- [ ] WireGuard tunnel P2P 2 nodes (POC)
-- [ ] Firecracker microVM boot
-- [ ] Tunnel + VM integration (Jupyter via tunnel)
-- [ ] Matching + credits SQLite
-- [ ] CLI `create/join/offer/borrow/status`
-- [ ] 2 transactions manuelles + 2 demos
+- [x] Workspace Rust 4 crates (core/tunnel/vm/cli) + binaire `helium-mesh` unifie
+- [x] Discovery mDNS zero-config + Kademlia (IDs stables)
+- [x] WireGuard tunnel P2P 2 nodes (ping 10.0.0.1 3/3, cross-OS Windows<->Linux)
+- [x] Firecracker microVM boot < 1min + SSH (2vCPU/2Go)
+- [x] Tunnel + VM integres (HTTP servi depuis la VM via tunnel)
+- [x] Matching + credits SQLite (2 transactions manuelles, scoring prouve)
+- [x] CLI `init/status/market/tunnel/mesh/daemon/storage` + TUI `dash`
+- [x] `install.sh` one-click + releases GitHub multi-plateformes + .deb + repo APT
+- [ ] 2e nœud Windows pair-a-pair complet (binaire dispo, firewall mDNS a ouvrir)
+- [ ] Template PyTorch/Jupyter pret-a-fine-tuner
 
-### v0.2 — Mesh Persistant (Q4 2026)
+### v0.2 — « 1er pilote externe » (en cours)
 
-- [ ] DHT bootstrap auto + persistent identity Ed25519
+- [ ] Parite Windows complete (2e nœud pair-a-pair, firewall mDNS auto)
+- [ ] Invitations de bout en bout (join = cles + tunnel auto)
+- [ ] Template PyTorch/Jupyter minimal dans la VM
+- [ ] **Gate de sortie : 1 pilote externe qui fait 1 transaction** (offre initiale « 3 amis » remplacee : le reseau se construit a partir des solution seekers deja identifies, pas du cercle perso)
+
+### v0.3 — Scale (2027, seulement si gate v0.2 passee)
+
+- [ ] DHT bootstrap auto + persistent identity Ed25519 (WAN)
 - [ ] Auto-reconnect + multi-node (3+)
-- [ ] Web UI (Next.js) dashboard
-- [ ] IPFS storage option
-
-### v0.3 — Scale (2027)
-
+- [ ] Web UI dashboard
 - [ ] NCCL multi-GPU, marketplace interne
 - [ ] Invitations QR / X / Discord
 - [ ] Monitoring & scheduling

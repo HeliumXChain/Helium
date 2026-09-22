@@ -9,6 +9,52 @@ use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
 const HELIUM_DIR: &str = ".helium";
 const IDENTITY_FILE: &str = "identity.json";
 const CONFIG_FILE: &str = "config.toml";
+const TOKEN_FILE: &str = "api_token";
+
+/// Read (or generate) the local API token. Missing file on old nodes =
+/// fail-open with empty token (see `authorized`); new nodes get one at init.
+pub fn api_token() -> String {
+    let path = match dirs::home_dir() {
+        Some(h) => h.join(HELIUM_DIR).join(TOKEN_FILE),
+        None => return String::new(),
+    };
+    if let Ok(t) = std::fs::read_to_string(&path) {
+        let t = t.trim().to_string();
+        if !t.is_empty() {
+            return t;
+        }
+    }
+    let fresh = uuid::Uuid::new_v4().simple().to_string();
+    if std::fs::write(&path, &fresh).is_ok() {
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            if let Ok(meta) = std::fs::metadata(&path) {
+                let mut perms = meta.permissions();
+                perms.set_mode(0o600);
+                let _ = std::fs::set_permissions(&path, perms);
+            }
+        }
+        return fresh;
+    }
+    String::new()
+}
+
+/// Bearer-or-query auth check. Empty expected token = allow (pre-token node).
+pub fn authorized(headers: &axum::http::HeaderMap, expected: &str) -> bool {
+    if expected.is_empty() {
+        return true;
+    }
+    if let Some(h) = headers
+        .get(axum::http::header::AUTHORIZATION)
+        .and_then(|v| v.to_str().ok())
+    {
+        if let Some(tok) = h.strip_prefix("Bearer ") {
+            return tok == expected;
+        }
+    }
+    false
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NodeIdentity {
@@ -208,9 +254,27 @@ impl IdentityManager {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[tokio::test]
     async fn test_identity_lifecycle() {
         // Use temp directory for testing
         // Note: In real tests we'd mock the helium_dir
+    }
+
+    #[test]
+    fn test_authorized() {
+        use axum::http::{HeaderMap, HeaderValue};
+        // No expected token (pre-token node) = open
+        assert!(authorized(&HeaderMap::new(), ""));
+        // Wrong / missing bearer = denied
+        let mut h = HeaderMap::new();
+        h.insert("authorization", HeaderValue::from_static("Bearer wrong"));
+        assert!(!authorized(&h, "secret"));
+        assert!(!authorized(&HeaderMap::new(), "secret"));
+        // Correct bearer = allowed
+        let mut h = HeaderMap::new();
+        h.insert("authorization", HeaderValue::from_static("Bearer secret"));
+        assert!(authorized(&h, "secret"));
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "helium-mesh"
-version = "0.1.0-alpha13"
+version = "0.1.0-alpha16"
 edition = "2021"
 authors = ["Helium Team"]
 description = "Private GPU sharing mesh network - persistent, social, enterprise-ready"

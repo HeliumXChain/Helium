@@ -194,15 +194,16 @@ wg_enable_service() {
 
 # ---- tunnel WireGuard persistant ----
 setup_wg_sudoers() {
-  # Laisse le daemon (non-root) gerer les peers wg sans mot de passe.
+  # Laisse le daemon (non-root) gerer wg + fc-vm.sh sans mot de passe.
+  # Sur : /srv/helium-vm root-owned (l'utilisateur ne peut pas le modifier).
   local wg_bin rule_user
   wg_bin="$(command -v wg || true)"
   rule_user="${SUDO_USER:-$(id -un)}"
   [ -n "$wg_bin" ] && [ "$rule_user" != "root" ] || return 0
-  echo "$rule_user ALL=(root) NOPASSWD: $wg_bin" | $SUDO tee /etc/sudoers.d/helium-wg >/dev/null
+  echo "$rule_user ALL=(root) NOPASSWD: $wg_bin, /srv/helium-vm/fc-vm.sh" | $SUDO tee /etc/sudoers.d/helium-wg >/dev/null
   $SUDO chmod 440 /etc/sudoers.d/helium-wg
   if $SUDO visudo -c -q 2>/dev/null; then
-    ok "sudoers: $rule_user gere wg sans mot de passe"
+    ok "sudoers: $rule_user gere wg + fc-vm.sh sans mot de passe"
   else
     warn "sudoers invalide, rollback"
     $SUDO rm -f /etc/sudoers.d/helium-wg

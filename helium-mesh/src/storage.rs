@@ -248,24 +248,32 @@ impl StorageManager {
         Ok(())
     }
 
-    /// Fetch a dataset from a peer (`base_url` like http://10.0.0.4:8788):
+    /// Fetch a dataset from a peer (`base_url` like http://10.0.0.x:8788):
     /// manifest first, then every chunk with SHA-256 verification.
+    /// `token` is the peer's API token (empty = no auth header).
     pub async fn fetch(
         base_url: &str,
         dataset_id: &str,
         out_dir: &std::path::Path,
+        token: &str,
     ) -> Result<std::path::PathBuf> {
         use tokio::io::AsyncWriteExt;
 
         let base = base_url.trim_end_matches('/');
         let client = reqwest::Client::new();
-        let ds: Dataset = client
-            .get(format!("{base}/manifests/{dataset_id}"))
+        let authed = |b: reqwest::RequestBuilder| {
+            if token.is_empty() {
+                b
+            } else {
+                b.bearer_auth(token)
+            }
+        };
+        let ds: Dataset = authed(client.get(format!("{base}/manifests/{dataset_id}")))
             .send()
             .await
             .context("cannot reach peer manifests")?
             .error_for_status()
-            .context("peer has no such dataset")?
+            .context("peer has no such dataset (or bad token)")?
             .json()
             .await
             .context("bad manifest JSON")?;
@@ -273,8 +281,7 @@ impl StorageManager {
         let dest = out_dir.join(&ds.name);
         let mut out = tokio::fs::File::create(&dest).await?;
         for chunk in &ds.chunks {
-            let bytes = client
-                .get(format!("{base}/chunks/{}", chunk.id))
+            let bytes = authed(client.get(format!("{base}/chunks/{}", chunk.id)))
                 .send()
                 .await
                 .context("chunk request failed")?
@@ -299,7 +306,8 @@ impl StorageManager {
         Ok(dest)
     }
 
-    async fn save(&self) -> Result<()> {        let datasets = self.datasets.read().await;
+    async fn save(&self) -> Result<()> {
+        let datasets = self.datasets.read().await;
         let data = serde_json::to_string_pretty(&*datasets)
             .context("Failed to serialize datasets")?;
 
@@ -316,21 +324,35 @@ impl StorageManager {
     }
 }
 
-async fn h_manifests(State(mgr): State<Arc<StorageManager>>) -> axum::Json<Vec<Dataset>> {
-    axum::Json(mgr.list_datasets().await)
+async fn h_manifests(
+    State(mgr): State<Arc<StorageManager>>,
+    headers: axum::http::HeaderMap,
+) -> Result<axum::Json<Vec<Dataset>>, StatusCode> {
+    if !crate::identity::authorized(&headers, &crate::identity::api_token()) {
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+    Ok(axum::Json(mgr.list_datasets().await))
 }
 
 async fn h_manifest(
     State(mgr): State<Arc<StorageManager>>,
+    headers: axum::http::HeaderMap,
     Path(id): Path<String>,
 ) -> Result<axum::Json<Dataset>, StatusCode> {
+    if !crate::identity::authorized(&headers, &crate::identity::api_token()) {
+        return Err(StatusCode::UNAUTHORIZED);
+    }
     mgr.get_dataset(&id).await.map(axum::Json).ok_or(StatusCode::NOT_FOUND)
 }
 
 async fn h_chunk(
     State(mgr): State<Arc<StorageManager>>,
+    headers: axum::http::HeaderMap,
     Path(id): Path<String>,
 ) -> Result<Vec<u8>, StatusCode> {
+    if !crate::identity::authorized(&headers, &crate::identity::api_token()) {
+        return Err(StatusCode::UNAUTHORIZED);
+    }
     mgr.read_chunk_bytes(&id).await.map_err(|_| StatusCode::NOT_FOUND)
 }
 
@@ -394,10 +416,26 @@ mod tests {
         let task = tokio::spawn(async move { srv.serve(port).await });
         tokio::time::sleep(std::time::Duration::from_millis(400)).await;
 
-        let dest =
-            StorageManager::fetch(&format!("http://127.0.0.1:{port}"), &ds.id, &dir.path().join("out"))
-                .await?;
+        // Full auth path: server enforces the local token, client presents it.
+        let tok = crate::identity::api_token();
+        assert!(!tok.is_empty());
+        let dest = StorageManager::fetch(
+            &format!("http://127.0.0.1:{port}"),
+            &ds.id,
+            &dir.path().join("out"),
+            &tok,
+        )
+        .await?;
         assert_eq!(std::fs::read(&dest)?, payload);
+        // Wrong token is rejected.
+        assert!(StorageManager::fetch(
+            &format!("http://127.0.0.1:{port}"),
+            &ds.id,
+            &dir.path().join("out2"),
+            "wrong-token",
+        )
+        .await
+        .is_err());
         task.abort();
         Ok(())
     }

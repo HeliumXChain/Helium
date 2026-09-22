@@ -62,16 +62,16 @@ impl HeliumDaemon {
         });
         info!("API listening on http://{bind}");
 
-        // Stop on Ctrl+C (programmatic shutdown = Phase 2)
+        // Stop on Ctrl+C / SIGTERM (normal exit flushes logs).
         info!("Helium daemon running. Press Ctrl+C to stop.");
-        tokio::signal::ctrl_c().await.ok();
+        shutdown_signal().await;
 
         info!("Shutting down Helium daemon...");
 
         Ok(())
     }
 
-    async fn mesh_maintenance(mesh: MeshManager) {        let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(30));
+        async fn mesh_maintenance(mesh: MeshManager) {        let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(30));
 
         loop {
             interval.tick().await;
@@ -201,10 +201,13 @@ impl HeliumDaemon {
                         keepalive: None,
                     };
                     match wg.add_peer(&peer) {
-                        Ok(()) => info!(
-                            "tunnel ready: borrower {} -> {ip} (match {})",
-                            request.requester, m.id
-                        ),
+                        Ok(()) => {
+                            info!(
+                                "tunnel ready: borrower {} -> {ip} (match {})",
+                                request.requester, m.id
+                            );
+                            Self::maybe_boot_vm(offer.amount);
+                        }
                         Err(e) => warn!("provision: cannot add borrower peer: {e}"),
                     }
                 }
@@ -231,11 +234,68 @@ impl HeliumDaemon {
             debug!("provision: not a party or missing keys, skipping");
         }
     }
+
+    /// RAM for a compute offer in MiB, capped for small providers.
+    /// Offer `amount` is GiB (VRAM/RAM); floor 512MiB, cap 2048MiB.
+    fn vm_mem_for_offer(amount_gb: u32) -> u64 {
+        (amount_gb as u64).saturating_mul(1024).clamp(512, 2048)
+    }
+
+    /// Boot a borrower microVM on first match (background thread — slow).
+    /// Uses fc-vm.sh (installed by install.sh --provider). Best effort.
+    fn maybe_boot_vm(offer_amount_gb: u32) {
+        use std::process::Command;
+
+        const SCRIPT: &str = "/srv/helium-vm/fc-vm.sh";
+        const SOCK: &str = "/tmp/fc-helium.socket";
+        if !std::path::Path::new(SCRIPT).exists() {
+            debug!("provision: no fc-vm.sh, skipping VM boot");
+            return;
+        }
+        if std::path::Path::new(SOCK).exists() {
+            debug!("provision: VM already running, skipping boot");
+            return;
+        }
+        let mem = Self::vm_mem_for_offer(offer_amount_gb);
+        std::thread::spawn(move || {
+            info!("provision: booting borrower VM ({mem} MiB)…");
+            let up = Command::new("sudo")
+                .args(["-n", SCRIPT, "up", "--mem", &mem.to_string()])
+                .output();
+            match up {
+                Ok(o) if o.status.success() => {
+                    info!("provision: VM booted, starting demo workload");
+                    let _ = Command::new("sudo")
+                        .args([
+                            "-n", SCRIPT, "ssh", "--",
+                            "setsid nohup python3 -m http.server 8888 >/tmp/http.log 2>&1 < /dev/null & sleep 1",
+                        ])
+                        .output();
+                    match Command::new("sudo")
+                        .args(["-n", SCRIPT, "expose", "8888"])
+                        .output()
+                    {
+                        Ok(e) if e.status.success() => {
+                            info!("provision: workload reachable via tunnel :8888")
+                        }
+                        _ => warn!("provision: expose failed"),
+                    }
+                }
+                _ => warn!("provision: VM boot failed (see /tmp/fc.log)"),
+            }
+        });
+    }
 }
 
-async fn api_status() -> axum::Json<serde_json::Value> {
+async fn api_status(
+    headers: axum::http::HeaderMap,
+) -> Result<axum::Json<serde_json::Value>, axum::http::StatusCode> {
     use crate::discovery::DhtDiscovery;
     use crate::market::Market;
+
+    if !crate::identity::authorized(&headers, &crate::identity::api_token()) {
+        return Err(axum::http::StatusCode::UNAUTHORIZED);
+    }
 
     let node_id = IdentityManager::load()
         .await
@@ -256,7 +316,7 @@ async fn api_status() -> axum::Json<serde_json::Value> {
         ),
         Err(_) => (0, 0),
     };
-    axum::Json(serde_json::json!({
+    Ok(axum::Json(serde_json::json!({
         "node": node_id,
         "mesh_joined": joined,
         "mesh_peers": peers,
@@ -265,5 +325,34 @@ async fn api_status() -> axum::Json<serde_json::Value> {
         "discovered_lan": DhtDiscovery::known_peers().len(),
         "discovered_dht": DhtDiscovery::kad_peers().len(),
         "version": env!("CARGO_PKG_VERSION"),
-    }))
+    })))
+}
+
+/// Wait for Ctrl+C (all platforms) or SIGTERM (unix: systemctl stop,
+/// timeout, kill). Normal exit flushes buffered logs.
+#[cfg(unix)]
+async fn shutdown_signal() {    let mut term = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+        .expect("cannot install SIGTERM handler");
+    tokio::select! {
+        _ = tokio::signal::ctrl_c() => {},
+        _ = term.recv() => {},
+    }
+}
+
+#[cfg(not(unix))]
+async fn shutdown_signal() {
+    let _ = tokio::signal::ctrl_c().await;
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn vm_mem_sizing() {
+        assert_eq!(HeliumDaemon::vm_mem_for_offer(0), 512); // floor
+        assert_eq!(HeliumDaemon::vm_mem_for_offer(1), 1024);
+        assert_eq!(HeliumDaemon::vm_mem_for_offer(2), 2048);
+        assert_eq!(HeliumDaemon::vm_mem_for_offer(64), 2048); // cap
+    }
 }

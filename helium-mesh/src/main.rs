@@ -88,7 +88,14 @@ enum Commands {
     },
 
     /// Fullscreen terminal dashboard (node, peers, market, tunnel, host)
-    Dash,
+    Dash {
+        /// Render one frame and exit (demos, screenshots, CI)
+        #[arg(long)]
+        once: bool,
+    },
+
+    /// Show this node's API token (share it with peers you trust)
+    Token,
 
     /// Remote disk: register and inspect shared datasets
     Storage {
@@ -284,6 +291,8 @@ enum StorageCommands {
         from: String,
         #[arg(short, long, default_value = ".")]
         dir: String,
+        #[arg(short, long, default_value = "")]
+        token: String,
     },
 }
 
@@ -291,10 +300,12 @@ enum StorageCommands {
 async fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    // Initialize logging
+    // Initialize logging (both crate names: bin `helium`, lib `helium_mesh`).
+    // Logs go to stderr so stdout stays machine-readable (token, lists).
     tracing_subscriber::fmt()
+        .with_writer(std::io::stderr)
         .with_env_filter(
-            if cli.verbose { "helium_mesh=debug" } else { "helium_mesh=info" }
+            if cli.verbose { "helium=debug,helium_mesh=debug" } else { "helium=info,helium_mesh=info" }
         )
         .init();
 
@@ -510,8 +521,16 @@ async fn main() -> Result<()> {
             }
         },
 
-        Commands::Dash => {
-            tui::run_dashboard().await?;
+        Commands::Dash { once } => {
+            if once {
+                tui::run_dashboard_once().await?;
+            } else {
+                tui::run_dashboard().await?;
+            }
+        }
+
+        Commands::Token => {
+            println!("{}", crate::identity::api_token());
         }
 
         Commands::Storage { command } => {
@@ -550,9 +569,19 @@ async fn main() -> Result<()> {
                     println!("Serving datasets on 0.0.0.0:{port} (Ctrl+C to stop)");
                     Arc::new(store).serve(port).await?;
                 }
-                StorageCommands::Fetch { dataset, from, dir } => {
-                    let dest =
-                        StorageManager::fetch(&from, &dataset, std::path::Path::new(&dir)).await?;
+                StorageCommands::Fetch { dataset, from, dir, token } => {
+                    let token = if token.is_empty() {
+                        std::env::var("HELIUM_API_TOKEN").unwrap_or_default()
+                    } else {
+                        token
+                    };
+                    let dest = StorageManager::fetch(
+                        &from,
+                        &dataset,
+                        std::path::Path::new(&dir),
+                        &token,
+                    )
+                    .await?;
                     println!("Fetched: {}", dest.display());
                 }
             }

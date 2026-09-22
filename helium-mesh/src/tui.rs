@@ -299,12 +299,24 @@ fn ui(f: &mut ratatui::Frame, s: &Snapshot) {
     );
 }
 
-pub async fn run_dashboard() -> Result<()> {
+fn setup_terminal() -> Result<Terminal<CrosstermBackend<io::Stdout>>> {
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen)?;
-    let backend = CrosstermBackend::new(stdout);
-    let mut terminal = Terminal::new(backend)?;
+    Ok(Terminal::new(CrosstermBackend::new(stdout))?)
+}
+
+fn restore_terminal(
+    terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,
+) -> Result<()> {
+    disable_raw_mode()?;
+    execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
+    terminal.show_cursor()?;
+    Ok(())
+}
+
+pub async fn run_dashboard() -> Result<()> {
+    let mut terminal = setup_terminal()?;
 
     let mut snap = gather().await;
     let mut last = Instant::now();
@@ -329,10 +341,15 @@ pub async fn run_dashboard() -> Result<()> {
         terminal.draw(|f| ui(f, &snap))?;
     }
 
-    disable_raw_mode()?;
-    execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
-    terminal.show_cursor()?;
-    Ok(())
+    restore_terminal(&mut terminal)
+}
+
+/// Single frame then clean exit (demos, screenshots, CI goldens).
+pub async fn run_dashboard_once() -> Result<()> {
+    let mut terminal = setup_terminal()?;
+    let snap = gather().await;
+    terminal.draw(|f| ui(f, &snap))?;
+    restore_terminal(&mut terminal)
 }
 
 #[cfg(test)]

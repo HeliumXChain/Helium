@@ -32,6 +32,7 @@ KEY="$DIR/ubuntu-22.04.id_rsa"
 SSH="ssh -i $KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 root@$GUEST_IP"
 
 info() { echo "[fc-vm] $*"; }
+warn() { echo "[fc-vm][WARN] $*" >&2; }
 need() { command -v "$1" >/dev/null 2>&1 || { echo "[fc-vm][ERR] missing: $1" >&2; return 1; }; }
 
 ensure_artifacts() {
@@ -95,6 +96,8 @@ cmd_up() {
   setsid nohup firecracker --api-sock "$SOCK" --config-file "$DIR/vm.json" > /tmp/fc.log 2>&1 < /dev/null &
   info "boot ${VCPU}vCPU/${MEM}MB (log /tmp/fc.log)…"
   wait_ssh
+  # Route par defaut volatile (perdue a chaque boot) : le guest sort via tap.
+  $SSH 'ip route replace default via 172.16.0.1 dev eth0 2>/dev/null || ip route replace default via 172.16.0.1' || warn "route guest non posee"
   info "guest OK: $($SSH 'hostname; cat /proc/meminfo | head -1')"
 }
 
@@ -106,10 +109,24 @@ cmd_down() {
   info "vm arretee"
 }
 
+cmd_resize() {
+  # Grow the rootfs image (VM must be down). Ex: fc-vm.sh resize +1536M
+  # Inside the guest afterwards: resize2fs /dev/vda
+  size="${1:?usage: fc-vm.sh resize +SIZE (ex: +1536M)}"
+  if [ -S /tmp/fc-helium.socket ]; then
+    echo "[fc-vm][ERR] arrete la VM d'abord (fc-vm.sh down)" >&2
+    return 1
+  fi
+  img="$DIR/ubuntu-22.04.ext4"
+  [ -f "$img" ] || { echo "[fc-vm][ERR] image absente: $img" >&2; return 1; }
+  [ -f "$img.bak" ] || cp "$img" "$img.bak"
+  qemu-img resize "$img" "$size"
+  info "image agrandie, backup: $img.bak (dans le guest: resize2fs /dev/vda)"
+}
+
 cmd_expose() {
   gport="${1:?usage: fc-vm.sh expose <guest-port> [host-port]}"
-  hport="${2:-$gport}"
-  iptables -t nat -D PREROUTING -i "$WG_IF" -p tcp --dport "$hport" -j DNAT --to "$GUEST_IP:$gport" 2>/dev/null || true
+  hport="${2:-$gport}"iptables -t nat -D PREROUTING -i "$WG_IF" -p tcp --dport "$hport" -j DNAT --to "$GUEST_IP:$gport" 2>/dev/null || true
   iptables -D FORWARD -i "$WG_IF" -o "$TAP" -p tcp -d "$GUEST_IP" --dport "$gport" -j ACCEPT 2>/dev/null || true
   iptables -t nat -D POSTROUTING -o "$TAP" -d "$GUEST_IP" -p tcp --dport "$gport" -j MASQUERADE 2>/dev/null || true
   iptables -t nat -A PREROUTING -i "$WG_IF" -p tcp --dport "$hport" -j DNAT --to "$GUEST_IP:$gport"
@@ -123,5 +140,6 @@ case "$CMD" in
   down) cmd_down ;;
   ssh) $SSH "$@" ;;
   expose) cmd_expose "$@" ;;
-  *) echo "usage: $0 {up|down|ssh|expose} [options]"; exit 1 ;;
+  resize) cmd_resize "$@" ;;
+  *) echo "usage: $0 {up|down|ssh|expose|resize} [options]"; exit 1 ;;
 esac
