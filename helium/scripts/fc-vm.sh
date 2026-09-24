@@ -126,7 +126,8 @@ cmd_resize() {
 
 cmd_expose() {
   gport="${1:?usage: fc-vm.sh expose <guest-port> [host-port]}"
-  hport="${2:-$gport}"iptables -t nat -D PREROUTING -i "$WG_IF" -p tcp --dport "$hport" -j DNAT --to "$GUEST_IP:$gport" 2>/dev/null || true
+  hport="${2:-$gport}"
+  iptables -t nat -D PREROUTING -i "$WG_IF" -p tcp --dport "$hport" -j DNAT --to "$GUEST_IP:$gport" 2>/dev/null || true
   iptables -D FORWARD -i "$WG_IF" -o "$TAP" -p tcp -d "$GUEST_IP" --dport "$gport" -j ACCEPT 2>/dev/null || true
   iptables -t nat -D POSTROUTING -o "$TAP" -d "$GUEST_IP" -p tcp --dport "$gport" -j MASQUERADE 2>/dev/null || true
   iptables -t nat -A PREROUTING -i "$WG_IF" -p tcp --dport "$hport" -j DNAT --to "$GUEST_IP:$gport"

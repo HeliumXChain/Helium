@@ -1,21 +1,24 @@
 #!/usr/bin/env bash
 # fc-provision.sh — rend une microVM Helium utilisable pour les workloads.
 # Idempotent : chaque etape verifie avant d'agir. A lancer sur le provider.
-# Usage: sudo ./fc-provision.sh [--guest-ip 172.16.0.2] [--key DIR/ubuntu-22.04.id_rsa] [--dir /srv/helium-vm] [--python]
+# Usage: sudo ./fc-provision.sh [--guest-ip 172.16.0.2] [--key DIR/ubuntu-22.04.id_rsa] [--dir /srv/helium-vm] [--python] [--pytorch]
 #   --python : installe aussi pip + numpy (lourd, ~60Mo, pour l'entrainement ML)
+#   --pytorch : + PyTorch CPU (~700Mo disque, pour les vrais workloads ML)
 set -euo pipefail
 
 GUEST_IP="172.16.0.2"
 KEY=""
 DIR="/srv/helium-vm"
 WITH_PYTHON=0
+WITH_TORCH=0
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --guest-ip) GUEST_IP="$2"; shift 2 ;;
     --key) KEY="$2"; shift 2 ;;
     --dir) DIR="$2"; shift 2 ;;
     --python) WITH_PYTHON=1; shift ;;
-    *) echo "usage: $0 [--guest-ip IP] [--key PATH] [--dir DIR] [--python]"; exit 1 ;;
+    --pytorch) WITH_PYTHON=1; WITH_TORCH=1; shift ;;
+    *) echo "usage: $0 [--guest-ip IP] [--key PATH] [--dir DIR] [--python] [--pytorch]"; exit 1 ;;
   esac
 done
 [ -z "$KEY" ] && KEY="$DIR/ubuntu-22.04.id_rsa"
@@ -75,6 +78,18 @@ if [ "$WITH_PYTHON" = "1" ]; then
     $G 'python3 -m pip install -q --break-system-packages numpy 2>&1 | tail -1'
     $G 'python3 -c "import numpy; print(numpy.__version__)"' || { echo "[fc-provision][ERR] numpy ko" >&2; exit 1; }
     ok "numpy ok"
+  fi
+fi
+
+# 5. PyTorch CPU (optionnel, lourd)
+if [ "$WITH_TORCH" = "1" ]; then
+  if $G 'python3 -c "import torch"' >/dev/null 2>&1; then
+    ok "torch present"
+  else
+    step "PyTorch CPU (~700Mo)…"
+    $G 'python3 -m pip install -q --break-system-packages --index-url https://download.pytorch.org/whl/cpu torch 2>&1 | tail -1'
+    $G 'python3 -c "import torch; print(torch.__version__)"' || { echo "[fc-provision][ERR] torch ko" >&2; exit 1; }
+    ok "torch ok"
   fi
 fi
 
