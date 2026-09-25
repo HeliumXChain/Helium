@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helium Communities — Emprunte la RAM/GPU d'un dev de confiance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #0a0a0f;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #a0a0b0;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .cta-form input, .cta-form select {
+            padding: 1rem 1.5rem;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #1a1a2e;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .cta-form input:focus, .cta-form select:focus {
+            border-color: #667eea;
+        }
+
+        .cta-form input::placeholder {
+            color: #666;
+        }
+
+        .cta-form button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .social-proof {
+            margin-top: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Problem Section */
+        .problem {
+            padding: 6rem 0;
+            background: #0f0f1a;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 3rem;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .problem-card {
+            background: #1a1a2e;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #333;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+
+        .problem-card h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .problem-card p {
+            color: #a0a0b0;
+        }
+
+        /* Solution Section */
+        .solution {
+            padding: 6rem 0;
+            background: #0a0a0f;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .solution-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .solution-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .solution-item h3 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .solution-item p {
+            color: #a0a0b0;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 6rem 0;
+            background: #0f0f1a;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            background: #1a1a2e;
+            padding: 2rem;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 2rem;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .step h4 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .step p {
+            color: #a0a0b0;
+            font-size: 0.9rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #333;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 6rem 0;
+            background: #0a0a0f;
+        }
+
+        .faq-item {
+            background: #1a1a2e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            color: #a0a0b0;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            color: #a0a0b0;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            background: #0a0a0f;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #1a1a2e;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .cta-form {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Emprunte la <span>RAM/GPU</span><br>d'un dev de confiance</h1>
+                <p>Fine-tune tes LLMs sans payer AWS. Partage tes ressources, gagne des credits. Reseau P2P ferme pour devs.</p>
+
+                <form class="cta-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                    <input type="email" name="email" placeholder="Ton email" required>
+                    <select name="profile" required>
+                        <option value="">Je suis...</option>
+                        <option value="borrower">Borrower — J'ai besoin de GPU/RAM</option>
+                        <option value="provider">Provider — J'ai des ressources disponibles</option>
+                        <option value="both">Les deux — Ca depend</option>
+                    </select>
+                    <button type="submit">Rejoindre la beta</button>
+                </form>
+
+                <p class="social-proof">100+ devs deja sur la liste. Acces beta limite.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <div class="container">
+            <h2 class="section-title">Tu connais cette douleur ?</h2>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h3>Colab te deconnecte</h3>
+                    <p>Ton training s'arrete apres 2h. Tu dois tout relancer. Tu perds des heures.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>AWS coute 300$/mois</h3>
+                    <p>Un fine-tuning moyen = 50-100$ sur AWS. En tant qu'indie, c'est trop cher.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>Ton laptop crash</h3>
+                    <p>Impossible de fine-tuner un modele > 7B sur 16GB RAM. Out of memory constant.</p>
+                </div>
+                <div class="problem-card">
+                    <h3>Tu n'oses pas demander</h3>
+                    <p>Tu connais un dev avec un PC plus puissant. Mais demander de l'aide, c'est complique.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution">
+        <div class="container">
+            <h2 class="section-title">Helium Communities — Partage de confiance</h2>
+            <div class="solution-grid">
+                <div class="solution-item">
+                    <div class="solution-icon">🔒</div>
+                    <h3>Reseau ferme</h3>
+                    <p>Web of Trust. Tu n'empruntes qu'a des devs verifies dans ta communaute.</p>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">🔐</div>
+                    <h3>Tunnel chiffre</h3>
+                    <p>WireGuard (chiffrement militaire) entre vos machines. Zero risque MITM.</p>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">🛡️</div>
+                    <h3>VM isolee</h3>
+                    <p>Firecracker microVM. Le borrower n'a pas acces a tes fichiers locaux.</p>
+                </div>
+                <div class="solution-item">
+                    <div class="solution-icon">🪙</div>
+                    <h3>Credits locaux</h3>
+                    <p>Prete aujourd'hui, emprunte demain. Pas de blockchain, pas de speculation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Comment ca marche ?</h2>
+            <div class="steps">
+                <div class="step">
+                    <span class="role-badge">BORROWER</span>
+                    <div class="step-number">1</div>
+                    <h4>Trouve un provider</h4>
+                    <p>Cherche dans ta communaute un dev avec des ressources disponibles.</p>
+                </div>
+                <div class="step">
+                    <span class="role-badge">BORROWER</span>
+                    <div class="step-number">2</div>
+                    <h4>Connecte-toi</h4>
+                    <p>Tunnel WireGuard chiffre entre vos machines. Setup en 30 secondes.</p>
+                </div>
+                <div class="step">
+                    <span class="role-badge">BORROWER</span>
+                    <div class="step-number">3</div>
+                    <h4>Execute</h4>
+                    <p>Fine-tune ton modele dans la microVM isolee sur le provider.</p>
+                </div>
+                <div class="step">
+                    <span class="role-badge">PROVIDER</span>
+                    <div class="step-number">4</div>
+                    <h4>Gagne des credits</h4>
+                    <p>Le borrower te paie en credits ou cash. Garde le controle total.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+        <div class="container">
+            <h2 class="section-title">Questions frequentes</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>C'est quoi la difference avec RunPod/AWS ?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    RunPod = GPU d'inconnus + factures a la fin du mois. Helium = GPU d'amis de confiance + 50% moins cher. C'est pour les cas ou tu as besoin de 16-32GB rapidement, pas pour du training a grande echelle.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>C'est securise ?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Oui. Tunnel WireGuard (chiffrement Curve25519, meme niveau que VPN militaires) + microVM Firecracker isolee. Le borrower voit uniquement la VM, jamais tes fichiers locaux.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>C'est gratuit ?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Beta gratuite pendant la phase de test. Puis paiement direct entre membres (credits communautaires ou cash). Pas de token, pas de blockchain, pas de speculation.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Quand c'est disponible ?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Beta ouverte Q2 2026. Inscris-toi pour acces prioritaire. On accepte les devs par vagues pour garantir la qualite du reseau.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Qui peut rejoindre ?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Devs, ML engineers, chercheurs qui font du ML/AI. Pas de profils entreprise (on cible les indies, etudiants, startups bootstrapped). Recommandation d'un membre = acces prioritaire.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>Rejoins la beta</h2>
+            <p>100+ devs deja sur la liste. Acces limite. Beta ouvre Q2 2026.</p>
+
+            <form class="cta-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                <input type="email" name="email" placeholder="Ton email" required>
+                <select name="profile" required>
+                    <option value="">Je suis...</option>
+                    <option value="borrower">Borrower — J'ai besoin de GPU/RAM</option>
+                    <option value="provider">Provider — J'ai des ressources disponibles</option>
+                    <option value="both">Les deux</option>
+                </select>
+                <button type="submit">Rejoindre la beta</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Helium Communities — 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple FAQ toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const answer = item.querySelector('.faq-answer');
+                const isOpen = answer.style.display === 'block';
+
+                // Close all
+                document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
+
+                // Toggle current
+                if (!isOpen) {
+                    answer.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

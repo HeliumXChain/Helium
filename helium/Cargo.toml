@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "crates/helium-core",
-    "crates/helium-tunnel", 
+    "crates/helium-tunnel",
     "crates/helium-vm",
     "crates/helium-cli",
 ]

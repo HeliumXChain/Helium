@@ -39,7 +39,7 @@ else
 fi
 
 # Check if running as root for provider
-if [ "$ROLE" = "provider" ] && [ "$EUID" -ne 0 ]; then 
+if [ "$ROLE" = "provider" ] && [ "$EUID" -ne 0 ]; then
     error "Provider role must run as root (for binding to port 51820)"
     exit 1
 fi
@@ -58,27 +58,27 @@ LISTEN_PORT=51820
 
 if [ "$ROLE" = "provider" ]; then
     step "Configuring as PROVIDER (listening on port $LISTEN_PORT)..."
-    
+
     cat > /tmp/helium-poc.conf << EOF
 [Interface]
 PrivateKey = $PRIVATE_KEY
 Address = 10.0.0.1/24
 ListenPort = $LISTEN_PORT
 EOF
-    
+
     success "Provider config generated"
     info "Your PUBLIC KEY: $PUBLIC_KEY"
     info "Share this with the borrower"
-    
+
 else
     if [ -z "$PEER_ENDPOINT" ] || [ -z "$PEER_PUBKEY" ]; then
         error "Borrower requires PEER_ENDPOINT and PEER_PUBKEY"
         info "Example: $0 borrower '192.168.1.100:51820' 'abcd1234...'"
         exit 1
     fi
-    
+
     step "Configuring as BORROWER (connecting to $PEER_ENDPOINT)..."
-    
+
     cat > /tmp/helium-poc.conf << EOF
 [Interface]
 PrivateKey = $PRIVATE_KEY
@@ -90,7 +90,7 @@ Endpoint = $PEER_ENDPOINT
 AllowedIPs = 10.0.0.0/24
 PersistentKeepalive = 25
 EOF
-    
+
     success "Borrower config generated"
 fi
 
@@ -130,7 +130,7 @@ wg show "$INTERFACE_NAME"
 if [ "$ROLE" = "borrower" ]; then
     step "Testing connectivity to provider (10.0.0.1)..."
     sleep 2
-    
+
     if ping -c 3 -W 5 10.0.0.1 &> /dev/null; then
         success "Ping successful! Tunnel is working."
         ping -c 1 -W 2 10.0.0.1 | grep "time=" | head -1

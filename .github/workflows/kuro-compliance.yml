@@ -44,7 +44,7 @@ jobs:
           fi
           EXPECTED=$(python3 -c "import json;print(json.load(open('.kuro/rules-manifest.json'))['agentsSha256'])")
           EXPECTED_COUNT=$(python3 -c "import json;print(json.load(open('.kuro/rules-manifest.json'))['ruleCount'])")
-          ACTUAL=$(sha256sum AGENTS.md | cut -d' ' -f1)
+          ACTUAL=$(python3 -c "import hashlib;print(hashlib.sha256(open('AGENTS.md','rb').read().replace(b'\r\n',b'\n')).hexdigest())")
           ACTUAL_COUNT=$(grep -c '^\- \*\*rule_' AGENTS.md || true)
           if [ "$ACTUAL" != "$EXPECTED" ]; then
             echo "::error::AGENTS.md a derive du dernier manifest de synchro (edition locale ou synchro manquee). Relancer sync-rules.ps1."

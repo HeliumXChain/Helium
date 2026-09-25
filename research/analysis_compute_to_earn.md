@@ -5,7 +5,7 @@ Ce document répond à tes questions concernant la cryptographie métier, le fon
 ## 1. C'est quoi la "Cryptographie métier" ?
 Dans une blockchain classique (comme Bitcoin), la cryptographie sert uniquement à sécuriser le réseau (signatures ECDSA pour prouver qu'on possède des fonds, hachage SHA-256 pour le minage).
 
-Dans notre cas, la "cryptographie métier" désigne les outils mathématiques utilisés pour **prouver qu'un travail utile a été fait correctement**. 
+Dans notre cas, la "cryptographie métier" désigne les outils mathématiques utilisés pour **prouver qu'un travail utile a été fait correctement**.
 *Exemple concret* : Si un utilisateur paie pour entraîner un modèle, et qu'un mineur dit "C'est bon, j'ai entraîné le modèle, voici les nouveaux poids !", comment être sûr qu'il n'a pas juste généré des poids au hasard pour obtenir la récompense ?
 La cryptographie métier (comme les preuves Zero-Knowledge adaptées au Machine Learning, ou "zk-ML") permet au mineur de fournir une preuve mathématique indéniable que le calcul a bien été exécuté sur les bonnes données, sans dévoiler tout le processus.
 
@@ -21,7 +21,7 @@ Tu l'as parfaitement résumé. L'écosystème fonctionne ainsi :
 Oui, c'est l'un des domaines d'innovation les plus actifs en ce moment. Les sources confirment que l'intégration Blockchain/IA via le Proof of Useful Work (PoUW) ou Decentralized AI (DAI) est en plein essor :
 *   **Decentralized AI (DAI)** : Distribuer la charge d'entraînement permet d'éviter les monopoles, réduit les points de défaillance uniques, et baisse les coûts.
 *   **Proof of Useful Work (PoUW)** : Des projets utilisent déjà ce concept pour remplacer le minage inutile (PoW classique) par des tâches d'IA réelles.
-*   **Projets existants validant le marché** : 
+*   **Projets existants validant le marché** :
     *   **Qubic** utilise le "Useful Proof of Work" (uPoW) strictement pour entraîner des réseaux de neurones.
     *   **DeepBrain Chain (DBC)** et **Neuromation** utilisent la blockchain pour baisser les coûts de l'entraînement IA.
     *   D'autres réseaux comme **Ambient**, **Gensyn**, et **Prime Intellect** sont en train de bâtir des infrastructures pour le training distribué.

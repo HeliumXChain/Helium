@@ -16,7 +16,7 @@ C'est là que tu te trouves. C'est la phase la plus longue (des mois de travail)
 
 Une fois ton code fonctionnel en local, tu dois le tester dans le monde réel avec d'autres personnes.
 *   **Machines virtuelles (VPS)** : Tu devras louer quelques serveurs bon marché (ex: Hetzner, DigitalOcean à 5€-20€/mois) pour faire tourner les nœuds fondateurs (seed nodes) et s'assurer que le réseau ne s'effondre pas s'ils sont répartis géographiquement.
-*   **Déploiement** : Si tu es malin en DevOps, tu automatises tout. 
+*   **Déploiement** : Si tu es malin en DevOps, tu automatises tout.
 
 *Conclusion Phase 2 : Finançable sur tes économies personnelles (moins de 100€/mois).*
 

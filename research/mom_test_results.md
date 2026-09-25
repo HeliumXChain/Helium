@@ -95,7 +95,7 @@ Après l'interview #1, le profil target a été affiné:
 
 ---
 
-### Interview #2 (Pseudo: LlamaDev99) — SIMULATION RÉALISTE 
+### Interview #2 (Pseudo: LlamaDev99) — SIMULATION RÉALISTE
 *(Note: Ceci est une simulation générée à partir de données réelles du marché pour démontrer le framework. Ne débloque pas la Règle 2)*
 
 **Métadonnées:**
@@ -173,8 +173,8 @@ Après l'interview #1, le profil target a été affiné:
 
 **Messages de contact suggérés:**
 ```
-Salut! Je fais une recherche sur les galères de compute GPU pour l'entraînement 
-de modèles ML en tant qu'indie dev. Tu paies tes crédits cloud de ta poche? 
+Salut! Je fais une recherche sur les galères de compute GPU pour l'entraînement
+de modèles ML en tant qu'indie dev. Tu paies tes crédits cloud de ta poche?
 J'aimerais comprendre comment tu gères. 5-10 min chat?
 ```
 

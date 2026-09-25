@@ -1,5 +1,5 @@
 //! Resource management for VMs
-//! 
+//!
 //! Handles cgroup limits, CPU pinning, and memory allocation
 
 use anyhow::Result;
@@ -41,19 +41,19 @@ impl ResourceController {
             cgroup_path: format!("/sys/fs/cgroup/helium/{}", vm_id),
         }
     }
-    
+
     /// Create cgroup for VM
     pub async fn create_cgroup(&self) -> Result<()> {
         tracing::info!("Creating cgroup at {}", self.cgroup_path);
-        
+
         #[cfg(target_os = "linux")]
         {
             use std::fs;
             use std::process::Command;
-            
+
             // Create cgroup v2 directory
             fs::create_dir_all(&self.cgroup_path)?;
-            
+
             // Enable controllers
             Command::new("sh")
                 .args(["-c", &format!(
@@ -61,48 +61,48 @@ impl ResourceController {
                 )])
                 .output()?;
         }
-        
+
         Ok(())
     }
-    
+
     /// Apply resource limits
     pub async fn apply_limits(&self, limits: &ResourceLimits) -> Result<()> {
         tracing::info!("Applying resource limits to {}", self.cgroup_path);
-        
+
         #[cfg(target_os = "linux")]
         {
             use std::fs::write;
-            
+
             // CPU limits
             write(
                 format!("{}/cpu.max", self.cgroup_path),
                 format!("{} {}", limits.cpu_quota, limits.cpu_period),
             )?;
-            
+
             write(
                 format!("{}/cpu.weight", self.cgroup_path),
                 limits.cpu_shares.to_string(),
             )?;
-            
+
             // Memory limits
             write(
                 format!("{}/memory.max", self.cgroup_path),
                 (limits.memory_limit_mib * 1024 * 1024).to_string(),
             )?;
-            
+
             write(
                 format!("{}/memory.swap.max", self.cgroup_path),
                 (limits.memory_swap_limit_mib * 1024 * 1024).to_string(),
             )?;
         }
-        
+
         Ok(())
     }
-    
+
     /// Assign Firecracker process to cgroup
     pub async fn assign_process(&self, pid: u32) -> Result<()> {
         tracing::info!("Assigning PID {} to cgroup {}", pid, self.cgroup_path);
-        
+
         #[cfg(target_os = "linux")]
         {
             use std::fs::write;
@@ -111,27 +111,27 @@ impl ResourceController {
                 pid.to_string(),
             )?;
         }
-        
+
         Ok(())
     }
-    
+
     /// Get current resource usage
     pub async fn get_usage(&self) -> Result<ResourceUsage> {
         #[cfg(target_os = "linux")]
         {
             use std::fs::read_to_string;
-            
+
             let cpu_stat = read_to_string(format!("{}/cpu.stat", self.cgroup_path))?;
             let memory_current = read_to_string(format!("{}/memory.current", self.cgroup_path))?
                 .trim()
                 .parse::<u64>()?;
-            
+
             Ok(ResourceUsage {
                 cpu_usage_nanos: Self::parse_cpu_usage(&cpu_stat),
                 memory_bytes: memory_current,
             })
         }
-        
+
         #[cfg(not(target_os = "linux"))]
         {
             Ok(ResourceUsage {
@@ -140,7 +140,7 @@ impl ResourceController {
             })
         }
     }
-    
+
     fn parse_cpu_usage(cpu_stat: &str) -> u64 {
         // Parse "usage_usec 12345678" from cpu.stat
         cpu_stat
@@ -151,17 +151,17 @@ impl ResourceController {
             .unwrap_or(0)
             * 1000 // Convert to nanoseconds
     }
-    
+
     /// Remove cgroup
     pub async fn remove_cgroup(&self) -> Result<()> {
         tracing::info!("Removing cgroup {}", self.cgroup_path);
-        
+
         #[cfg(target_os = "linux")]
         {
             use std::fs::remove_dir;
             remove_dir(&self.cgroup_path)?;
         }
-        
+
         Ok(())
     }
 }

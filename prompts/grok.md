@@ -56,4 +56,3 @@ Return:
 - What can it NOT confirm?
 - Which expert calls are still mandatory before the next stage?
 ```
-

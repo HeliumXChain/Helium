@@ -1,5 +1,5 @@
 //! Helium Core - P2P Discovery and Resource Matching
-//! 
+//!
 //! Provides libp2p-based peer discovery, resource advertisement,
 //! and matching logic for the Helium compute marketplace.
 
@@ -25,7 +25,7 @@ impl HeliumNode {
         let peer_id = PeerId::generate();
         let discovery = discovery::DiscoveryService::new(peer_id.clone()).await?;
         let matcher = matching::Matcher::new();
-        
+
         Ok(Self {
             peer_id,
             discovery,
@@ -33,14 +33,14 @@ impl HeliumNode {
             local_resources: Arc::new(RwLock::new(Vec::new())),
         })
     }
-    
+
     /// Start the node - begins discovery and matching
     pub async fn start(&mut self) -> anyhow::Result<()> {
         tracing::info!("Starting Helium node: {}", self.peer_id);
         self.discovery.start().await?;
         Ok(())
     }
-    
+
     /// Advertise local resources to the network
     pub async fn advertise_resources(&self, resources: Vec<ResourceOffer>) -> anyhow::Result<()> {
         let mut local = self.local_resources.write().await;
@@ -48,7 +48,7 @@ impl HeliumNode {
         self.discovery.advertise(local.clone()).await?;
         Ok(())
     }
-    
+
     /// Find matching providers for a resource request
     pub async fn find_matches(&self, request: ResourceRequest) -> anyhow::Result<Vec<Match>> {
         let peers = self.discovery.discover_peers().await?;
@@ -60,7 +60,7 @@ impl HeliumNode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[tokio::test]
     async fn test_node_creation() {
         let node = HeliumNode::new().await;

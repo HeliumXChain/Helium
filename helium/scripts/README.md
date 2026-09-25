@@ -26,10 +26,10 @@ Replace:
 
 ## What This Proves
 
-✅ P2P tunnel establishment  
-✅ Key exchange  
-✅ NAT traversal (if using public IPs)  
-✅ Bidirectional connectivity  
+✅ P2P tunnel establishment
+✅ Key exchange
+✅ NAT traversal (if using public IPs)
+✅ Bidirectional connectivity
 
 ## Manual WireGuard Setup
 

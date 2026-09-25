@@ -1,6 +1,6 @@
 # Proposition de Développement pour le Projet Helium
 
-Le projet "Helium" a pour objectif la construction d'une blockchain indépendante s'appuyant sur le protocole Tor. L'état actuel du code consiste en une ébauche initiale de la classe `Blockchain` dans `test_blockchain.py`. 
+Le projet "Helium" a pour objectif la construction d'une blockchain indépendante s'appuyant sur le protocole Tor. L'état actuel du code consiste en une ébauche initiale de la classe `Blockchain` dans `test_blockchain.py`.
 
 Afin de structurer le développement de manière rigoureuse et scientifique, les axes suivants sont proposés :
 

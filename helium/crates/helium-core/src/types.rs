@@ -12,7 +12,7 @@ impl PeerId {
         // TODO: Use proper keypair generation from libp2p
         Self(uuid::Uuid::new_v4().to_string())
     }
-    
+
     pub fn as_str(&self) -> &str {
         &self.0
     }

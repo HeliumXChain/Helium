@@ -20,7 +20,7 @@ Quick questions avant de commencer:
 
 **Problème supposé** : L'entraînement ou le fine-tuning de modèles (notamment les LLMs) coûte trop cher sur le cloud classique (AWS/Google Cloud) et l'achat de matériel local (GPU) est prohibitif pour les petits acteurs.
 
-**Target utilisateur RÉVISÉ** : 
+**Target utilisateur RÉVISÉ** :
 - Étudiants en IA SANS labo équipé
 - Chercheurs indépendants SANS budget
 - Startups AI bootstrapped SANS credits gratuits
@@ -39,7 +39,7 @@ Quick questions avant de commencer:
 
 ### Approche (A/B Testing des accroches)
 
-**Accroche 1 (Reddit r/LocalLLaMA, r/MachineLearning)** : 
+**Accroche 1 (Reddit r/LocalLLaMA, r/MachineLearning)** :
 > *"Salut ! Je suis indie dev et je galère avec les coûts GPU pour mes projets ML. Je fais une recherche pour comprendre comment les autres gèrent. Si tu paies tes crédits cloud de ta poche, j'aimerais chatter 5 min. Pas de pitch, juste comprendre ton expérience."*
 
 **Accroche 2 (Discord serveurs indie/étudiants)** :
@@ -58,10 +58,10 @@ Quick questions avant de commencer:
 **PHASE 2: Histoire de douleur (si profil validé)**
 4. **"Raconte-moi la dernière fois que tu as dû entraîner/fine-tuner un modèle et que tu as été bloqué par tes ressources (ou ton budget)."**
    *(On cherche l'histoire vraie, récente, pas une théorie).*
-   
+
 5. **"Combien de temps as-tu perdu à essayer de contourner ce problème?"**
    *(Ex: Optimisation excessive, recherche d'offres gratuites, attente de crédits = douleur réelle).*
-   
+
 6. **"Qu'est-ce que tu as fait concrètement pour t'en sortir à ce moment-là?"**
    *(Ex: Utilisation de Colab gratuit qui crashe, location sur RunPod, abandon du projet).*
 

@@ -1,5 +1,5 @@
 //! Helium VM - Firecracker MicroVM Orchestration
-//! 
+//!
 //! Manages Firecracker microVMs for secure, isolated compute
 //! execution on provider machines.
 
@@ -60,56 +60,56 @@ impl VmManager {
             active_vms: Vec::new(),
         }
     }
-    
+
     /// Create a new microVM with given configuration
     pub async fn create_vm(&self, config: VmConfig) -> Result<MicroVm> {
         let vm_id = format!("helium-{}", uuid::Uuid::new_v4());
-        tracing::info!("Creating microVM {} with {} vCPUs, {} MiB RAM", 
+        tracing::info!("Creating microVM {} with {} vCPUs, {} MiB RAM",
             vm_id, config.vcpu_count, config.mem_size_mib);
-        
-        // TODO: 
+
+        // TODO:
         // 1. Create jailer environment
         // 2. Configure Firecracker API socket
         // 3. Set boot source (kernel)
         // 4. Set root drive
         // 5. Configure network (tap device)
         // 6. Start VM
-        
+
         let vm = MicroVm {
             id: vm_id,
             config,
             status: VmStatus::Creating,
             firecracker_pid: None,
         };
-        
+
         Ok(vm)
     }
-    
+
     /// Start a microVM
     pub async fn start_vm(&self, vm: &mut MicroVm) -> Result<()> {
         tracing::info!("Starting microVM {}", vm.id);
-        
+
         // TODO: Launch firecracker process with jailer
-        
+
         vm.status = VmStatus::Starting;
         Ok(())
     }
-    
+
     /// Stop a microVM gracefully
     pub async fn stop_vm(&self, vm: &mut MicroVm) -> Result<()> {
         tracing::info!("Stopping microVM {}", vm.id);
-        
+
         // TODO: Send shutdown signal via API
         // Wait for graceful shutdown, then force if needed
-        
+
         vm.status = VmStatus::Stopping;
         Ok(())
     }
-    
+
     /// Force kill a microVM
     pub async fn kill_vm(&self, vm: &mut MicroVm) -> Result<()> {
         tracing::warn!("Force killing microVM {}", vm.id);
-        
+
         if let Some(pid) = vm.firecracker_pid {
             // Send SIGKILL
             #[cfg(unix)]
@@ -120,11 +120,11 @@ impl VmManager {
                     .output()?;
             }
         }
-        
+
         vm.status = VmStatus::Stopped;
         Ok(())
     }
-    
+
     /// Get VM metrics
     pub async fn get_metrics(&self, vm: &MicroVm) -> Result<VmMetrics> {
         // TODO: Query Firecracker API for metrics
@@ -154,7 +154,7 @@ pub struct VmMetrics {
 mod tests {
     use super::*;
     use std::path::PathBuf;
-    
+
     #[test]
     fn test_vm_manager_creation() {
         let manager = VmManager::new(
@@ -164,7 +164,7 @@ mod tests {
         );
         assert!(manager.active_vms.is_empty());
     }
-    
+
     #[test]
     fn test_vm_config() {
         let config = VmConfig {

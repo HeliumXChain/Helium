@@ -59,4 +59,3 @@ Return these sections:
   - L2 to L3
 - If not, list the minimum next research or expert calls still required.
 ```
-

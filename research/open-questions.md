@@ -26,4 +26,3 @@ A pain point is only considered validated for the next stage when:
 - Minimum: 3 calls
 - Maximum: 5 calls
 - Trigger: required whenever desk research cannot prove buyer reality, compliance reality, or integration reality
-

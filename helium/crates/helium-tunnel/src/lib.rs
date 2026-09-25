@@ -1,5 +1,5 @@
 //! Helium Tunnel - WireGuard P2P Tunnels
-//! 
+//!
 //! Manages secure P2P tunnels between borrowers and providers
 //! using WireGuard for encryption and NAT traversal.
 
@@ -31,14 +31,14 @@ impl TunnelManager {
             config,
         }
     }
-    
+
     /// Initialize local WireGuard interface
     pub async fn init(&mut self) -> Result<()> {
         tracing::info!("Initializing WireGuard tunnel on port {}", self.config.listen_port);
         // TODO: Platform-specific WireGuard setup (Windows/Linux/macOS)
         Ok(())
     }
-    
+
     /// Establish tunnel to a remote peer
     pub async fn connect(&self, peer_public_key: &str, endpoint: SocketAddr) -> Result<Tunnel> {
         tracing::info!("Connecting to peer at {} with key {}", endpoint, &peer_public_key[..8]);
@@ -49,7 +49,7 @@ impl TunnelManager {
             status: TunnelStatus::Connecting,
         })
     }
-    
+
     /// Close tunnel
     pub async fn disconnect(&self, tunnel: Tunnel) -> Result<()> {
         tracing::info!("Disconnecting from {}", &tunnel.peer_public_key[..8]);
@@ -78,7 +78,7 @@ impl Tunnel {
     pub fn status(&self) -> TunnelStatus {
         self.status
     }
-    
+
     pub fn endpoint(&self) -> SocketAddr {
         self.endpoint
     }
@@ -87,7 +87,7 @@ impl Tunnel {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_tunnel_config() {
         let config = TunnelConfig {

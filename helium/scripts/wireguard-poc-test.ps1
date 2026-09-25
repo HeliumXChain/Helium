@@ -6,7 +6,7 @@ param(
     [Parameter(Mandatory=$true)]
     [ValidateSet("provider", "borrower")]
     [string]$Role,
-    
+
     [string]$PeerEndpoint = "",
     [string]$PeerPublicKey = ""
 )
@@ -46,7 +46,7 @@ $listenPort = 51820
 
 if ($Role -eq "provider") {
     Write-Step "Configuring as PROVIDER (listening on port $listenPort)..."
-    
+
     $config = @"
 [Interface]
 PrivateKey = $privateKey
@@ -55,20 +55,20 @@ ListenPort = $listenPort
 
 # Will add peer config after borrower connects
 "@
-    
+
     Write-Info "Provider config generated"
     Write-Info "Your PUBLIC KEY: $publicKey"
     Write-Info "Share this with the borrower"
-    
+
 } else {
     if (-not $PeerEndpoint -or -not $PeerPublicKey) {
         Write-Error "Borrower role requires -PeerEndpoint and -PeerPublicKey parameters"
         Write-Info "Example: .\wireguard-poc-test.ps1 -Role borrower -PeerEndpoint '192.168.1.100:51820' -PeerPublicKey 'abcd1234...'"
         exit 1
     }
-    
+
     Write-Step "Configuring as BORROWER (connecting to $PeerEndpoint)..."
-    
+
     $config = @"
 [Interface]
 PrivateKey = $privateKey
@@ -80,7 +80,7 @@ Endpoint = $PeerEndpoint
 AllowedIPs = 10.0.0.0/24
 PersistentKeepalive = 25
 "@
-    
+
     Write-Info "Borrower config generated"
 }
 
@@ -99,22 +99,22 @@ Write-Step "Importing tunnel configuration..."
 try {
     # Remove existing interface if present
     wg-quick down $interfaceName 2>$null
-    
+
     # Import config
     wg-quick up $configPath
-    
+
     if ($LASTEXITCODE -eq 0) {
         Write-Success "Tunnel interface '$interfaceName' created successfully!"
-        
+
         # Show interface status
         Write-Step "Interface Status:"
         wg show $interfaceName
-        
+
         # Test connectivity
         if ($Role -eq "borrower") {
             Write-Step "Testing connectivity to provider (10.0.0.1)..."
             Start-Sleep -Seconds 2
-            
+
             $pingResult = Test-Connection -ComputerName "10.0.0.1" -Count 3 -ErrorAction SilentlyContinue
             if ($pingResult) {
                 Write-Success "Ping successful! Tunnel is working."
@@ -125,24 +125,24 @@ try {
                 Write-Info "Check: wg show"
             }
         }
-        
+
         Write-Host "`n=== SUCCESS ===" -ForegroundColor Green
         Write-Host "WireGuard tunnel established!" -ForegroundColor Green
         Write-Host "Interface: $interfaceName" -ForegroundColor Cyan
         Write-Host "Your IP: $(if ($Role -eq 'provider') { '10.0.0.1' } else { '10.0.0.2' })" -ForegroundColor Cyan
-        
+
         if ($Role -eq "provider") {
             Write-Host "`nNext steps for borrower:" -ForegroundColor Yellow
             Write-Host "1. Share your public key: $publicKey" -ForegroundColor White
             Write-Host "2. Share your public IP: $(Invoke-RestMethod -Uri 'https://api.ipify.org')" -ForegroundColor White
             Write-Host "3. Wait for borrower to connect" -ForegroundColor White
         }
-        
+
     } else {
         Write-Error "Failed to create tunnel interface"
         exit 1
     }
-    
+
 } catch {
     Write-Error "Error creating tunnel: $_"
     Write-Info "You may need to run as Administrator"

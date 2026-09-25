@@ -17,7 +17,7 @@ Validate that two machines can establish a secure P2P tunnel using WireGuard, fo
 - Public IP or accessible via NAT (port forwarding)
 - UDP port 51820 open in firewall
 
-### Borrower Machine (GPU User)  
+### Borrower Machine (GPU User)
 - WireGuard installed
 - Internet connectivity
 
@@ -113,7 +113,7 @@ sudo wg-quick up helium
 # From borrower
 ping 10.0.0.1
 
-# From provider  
+# From provider
 ping 10.0.0.2
 
 # Check handshake
@@ -178,7 +178,7 @@ After successful test, record in `validation_evidence.md`:
 ### Results
 - ✅ Tunnel established: [time]
 - ✅ Provider IP: 10.0.0.1
-- ✅ Borrower IP: 10.0.0.2  
+- ✅ Borrower IP: 10.0.0.2
 - ✅ Ping latency: [X]ms
 - ✅ Connection stable: [duration]
 

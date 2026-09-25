@@ -38,20 +38,20 @@ Weighted points formula: `weight * score / 5`
 - L0 -> L1: at least 5 recent dated signals and no critical safety contradiction.
   - **Status**: IN PROGRESS — 6 signals collected (competitor analysis + Mom Test #1)
   - **Blocker**: Need 4 more Mom Test interviews (currently 1/5)
-  
+
 - L1 -> L2: one credible buyer hypothesis and one credible integration hypothesis.
   - **Status**: NOT STARTED
-  
+
 - L2 -> L3: expert calls confirm buyer, approval path, and low-friction pilot scope.
   - **Status**: NOT STARTED
-  
+
 - L3 -> L4: one clear commercial ask and one measurable pilot KPI.
   - **Status**: NOT STARTED
 
 ## Decision rule
 
 - Do not move to marketing or code if any of these axes is still `1/5`: regulatory friction, integration load, or platform dependency.
-  - **Current Status**: 
+  - **Current Status**:
     - Regulatory friction: 2/5 (acceptable)
     - Integration load: 1/5 (BLOCKER)
     - Platform dependency: 2/5 (acceptable)
