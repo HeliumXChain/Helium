@@ -52,6 +52,19 @@ CLI (Rust) -> Discovery (libp2p DHT privee) -> Matching (SQLite) -> Tunnel (Wire
 - [ ] Invitations QR / X / Discord
 - [ ] Monitoring & scheduling
 
+### v0.3+ — Kuro x Helium Compute (planifie)
+Kuro peut demander du compute au mesh quand il en a besoin.
+Loopback par defaut, acces distant uniquement via reseau prive
+WireGuard ou tunnel SSH, avec token d API.
+
+- [x] API jobs : `POST /requests`, `POST /matches/:id/accept`, `GET /workloads` (S1, token requis)
+- [x] Scheduler avec quotas par projet, file, annulation et timeout (S3 : 429 quota, cancel, TTL, demos CLI)
+- [x] Connecteur Kuro : `GET /api/compute/offers`, `POST /api/compute/request` (S2, file locale)
+- [x] Templates `jupyter`/`train`/`batch-scan` + `docs/JOBS_QUICKSTART.md` (Q5)
+- [ ] Providers legers (Android branches, classe CPU batch-only ; bench soutenu : fait)
+- [ ] 2 demos de bout en bout (<3 etapes chacune)
+- [ ] Gate de sortie : 1 job via tunnel prive + tests verts
+
 ---
 
 ## MVP Scope

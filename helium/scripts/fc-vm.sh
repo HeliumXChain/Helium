@@ -28,7 +28,12 @@ done
 
 TAP_IP="${GUEST_IP%.*}.1"
 SOCK=/tmp/fc-helium.socket
+# Cle unique par VM si elle existe, sinon cle CI (1er boot seulement).
+# La cle CI est PUBLIQUE (artefact Firecracker) : rotate_guest_key() la
+# remplace des le 1er boot. Le fichier CI est garde pour re-bootstrap.
+VM_KEY="$DIR/vm_key"
 KEY="$DIR/ubuntu-22.04.id_rsa"
+[ -f "$VM_KEY" ] && KEY="$VM_KEY"
 SSH="ssh -i $KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 root@$GUEST_IP"
 
 info() { echo "[fc-vm] $*"; }
@@ -98,6 +103,7 @@ cmd_up() {
   wait_ssh
   # Route par defaut volatile (perdue a chaque boot) : le guest sort via tap.
   $SSH 'ip route replace default via 172.16.0.1 dev eth0 2>/dev/null || ip route replace default via 172.16.0.1' || warn "route guest non posee"
+  rotate_guest_key || warn "rotation cle guest echouee (cle CI gardee)"
   info "guest OK: $($SSH 'hostname; cat /proc/meminfo | head -1')"
 }
 
@@ -109,8 +115,37 @@ cmd_down() {
   info "vm arretee"
 }
 
-cmd_resize() {
-  # Grow the rootfs image (VM must be down). Ex: fc-vm.sh resize +1536M
+rotate_guest_key() {
+  # Remplace la cle CI publique par une cle unique par VM.
+  # Regenere si absente OU cassee (une cle cassee n'a jamais pu servir).
+  local vmkey="$DIR/vm_key" newpub oldpub
+  local SSH_NEW="ssh -i $vmkey -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 root@$GUEST_IP"
+  if [ -f "$vmkey" ] && $SSH_NEW true 2>/dev/null; then
+    info "cle guest unique deja active"
+    return 0
+  fi
+  # Canal casse (ex: vm_key generee mais jamais injectee) : repli cle CI.
+  if ! $SSH true 2>/dev/null; then
+    SSH="ssh -i $DIR/ubuntu-22.04.id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 root@$GUEST_IP"
+    $SSH true 2>/dev/null || { echo "[fc-vm][ERR] aucun acces SSH guest" >&2; return 1; }
+    info "repli cle CI pour bootstrap"
+  fi
+  rm -f "$vmkey" "$vmkey.pub" # ssh-keygen demanderait confirmation sinon
+  ssh-keygen -t ed25519 -N "" -f "$vmkey" -q
+  chmod 600 "$vmkey"
+  newpub="$(cat "$vmkey.pub")"
+  $SSH "grep -q -F '$newpub' ~/.ssh/authorized_keys 2>/dev/null || echo '$newpub' >> ~/.ssh/authorized_keys"
+  $SSH_NEW true 2>/dev/null || { echo "[fc-vm][ERR] nouvelle cle refusee, CI gardee" >&2; return 1; }
+  oldpub="$(ssh-keygen -y -f "$DIR/ubuntu-22.04.id_rsa")"
+  $SSH "sed -i '\|$oldpub|d' ~/.ssh/authorized_keys"
+  if $SSH true 2>/dev/null; then
+    warn "cle CI toujours acceptee (non bloquant)"
+  else
+    info "cle CI revoquee, cle unique active"
+  fi
+}
+
+cmd_resize() {  # Grow the rootfs image (VM must be down). Ex: fc-vm.sh resize +1536M
   # Inside the guest afterwards: resize2fs /dev/vda
   size="${1:?usage: fc-vm.sh resize +SIZE (ex: +1536M)}"
   if [ -S /tmp/fc-helium.socket ]; then
@@ -142,5 +177,6 @@ case "$CMD" in
   ssh) $SSH "$@" ;;
   expose) cmd_expose "$@" ;;
   resize) cmd_resize "$@" ;;
-  *) echo "usage: $0 {up|down|ssh|expose|resize} [options]"; exit 1 ;;
+  rotate-key) rotate_guest_key ;;
+  *) echo "usage: $0 {up|down|ssh|expose|resize|rotate-key} [options]"; exit 1 ;;
 esac
