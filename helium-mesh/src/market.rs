@@ -12,7 +12,7 @@ use rusqlite::{params, Connection};
 
 const DB_FILE: &str = "market.db";
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct Offer {
     pub id: String,
     pub provider: String,
@@ -21,10 +21,25 @@ pub struct Offer {
     pub price_per_hour: f64,
     pub endpoint: String,
     pub wg_pubkey: String,
+    /// Sustained bench score (GFLOPS, `helium bench`). 0 = unmeasured.
+    #[serde(default)]
+    pub bench_gflops: f64,
     pub status: String,
 }
 
+/// Groups the 7 offer fields so add_offer stays a 2-arg call.
 #[derive(Debug, Clone)]
+pub struct NewOffer {
+    pub provider: String,
+    pub rtype: String,
+    pub amount: u32,
+    pub price: f64,
+    pub endpoint: String,
+    pub wg_pubkey: String,
+    pub bench_gflops: f64,
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct Request {
     pub id: String,
     pub requester: String,
@@ -34,10 +49,32 @@ pub struct Request {
     pub hours: u32,
     pub wg_pubkey: String,
     pub endpoint: String,
+    /// S2: container image wanted for the job ("" = node default, see Q5 templates).
+    pub image: String,
+    /// S2: GPUs wanted (0 = unset, node decides).
+    pub gpus: u32,
+    /// Bench floor: offers below this sustained GFLOPS never match (0 = any).
+    #[serde(default)]
+    pub min_bench: f64,
     pub status: String,
 }
 
+/// S4: groups the 9 request fields so add_request stays a 2-arg call.
 #[derive(Debug, Clone)]
+pub struct NewRequest {
+    pub requester: String,
+    pub rtype: String,
+    pub amount: u32,
+    pub max_price: f64,
+    pub hours: u32,
+    pub wg_pubkey: String,
+    pub endpoint: String,
+    pub image: String,
+    pub gpus: u32,
+    pub min_bench: f64,
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct MatchRow {
     pub id: String,
     pub offer_id: String,
@@ -52,9 +89,8 @@ pub struct Market {
 }
 
 fn helium_db_path() -> Result<std::path::PathBuf> {
-    let home = dirs::home_dir().context("no home directory")?;
-    let dir = home.join(".helium");
-    std::fs::create_dir_all(&dir).context("cannot create .helium dir")?;
+    let dir = crate::identity::helium_dir()?;
+    std::fs::create_dir_all(&dir).context("cannot create helium dir")?;
     Ok(dir.join(DB_FILE))
 }
 
@@ -63,12 +99,15 @@ CREATE TABLE IF NOT EXISTS offers (
     id TEXT PRIMARY KEY, provider TEXT NOT NULL, rtype TEXT NOT NULL,
     amount INTEGER NOT NULL, price_per_hour REAL NOT NULL,
     endpoint TEXT NOT NULL DEFAULT '', wg_pubkey TEXT NOT NULL DEFAULT '',
+    bench_gflops REAL NOT NULL DEFAULT 0.0,
     status TEXT NOT NULL DEFAULT 'open', created_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS requests (
     id TEXT PRIMARY KEY, requester TEXT NOT NULL, rtype TEXT NOT NULL,
     amount INTEGER NOT NULL, max_price REAL NOT NULL, hours INTEGER NOT NULL,
     wg_pubkey TEXT NOT NULL DEFAULT '', endpoint TEXT NOT NULL DEFAULT '',
+    image TEXT NOT NULL DEFAULT '', gpus INTEGER NOT NULL DEFAULT 0,
+    min_bench REAL NOT NULL DEFAULT 0.0,
     status TEXT NOT NULL DEFAULT 'open', created_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS matches (
@@ -93,6 +132,10 @@ fn migrate(conn: &Connection) -> Result<()> {
         "ALTER TABLE offers ADD COLUMN wg_pubkey TEXT NOT NULL DEFAULT ''",
         "ALTER TABLE requests ADD COLUMN wg_pubkey TEXT NOT NULL DEFAULT ''",
         "ALTER TABLE requests ADD COLUMN endpoint TEXT NOT NULL DEFAULT ''",
+        "ALTER TABLE requests ADD COLUMN image TEXT NOT NULL DEFAULT ''",
+        "ALTER TABLE requests ADD COLUMN gpus INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE requests ADD COLUMN min_bench REAL NOT NULL DEFAULT 0.0",
+        "ALTER TABLE offers ADD COLUMN bench_gflops REAL NOT NULL DEFAULT 0.0",
     ] {
         match conn.execute_batch(stmt) {
             Ok(()) => {}
@@ -115,11 +158,16 @@ fn match_score(
     req_type: &str,
     req_amount: u32,
     req_max_price: f64,
+    req_min_bench: f64,
     off_type: &str,
     off_amount: u32,
     off_price: f64,
+    off_bench: f64,
 ) -> Option<f64> {
     if req_type != off_type {
+        return None;
+    }
+    if off_bench < req_min_bench {
         return None;
     }
     if off_price > req_max_price {
@@ -133,7 +181,7 @@ fn match_score(
     }
     let price_score = 1.0 - (off_price / req_max_price);
     let capacity_score = (off_amount as f64 / req_amount as f64).min(2.0) / 2.0;
-    Some(((price_score * 0.5) + (capacity_score * 0.5)).min(1.0).max(0.0))
+    Some(((price_score * 0.5) + (capacity_score * 0.5)).clamp(0.0, 1.0))
 }
 
 impl Market {
@@ -145,35 +193,27 @@ impl Market {
         Ok(Self { conn })
     }
 
-    #[cfg(test)]
-    fn open_memory() -> Result<Self> {
+    /// In-memory database: demos, tests, zero disk writes.
+    pub fn open_memory() -> Result<Self> {
         let conn = Connection::open_in_memory().context("cannot open memory db")?;
         conn.execute_batch(SCHEMA).context("cannot init schema")?;
         migrate(&conn)?;
         Ok(Self { conn })
     }
 
-    pub fn add_offer(
-        &self,
-        provider: &str,
-        rtype: &str,
-        amount: u32,
-        price: f64,
-        endpoint: &str,
-        wg_pubkey: &str,
-    ) -> Result<String> {
+    pub fn add_offer(&self, off: &NewOffer) -> Result<String> {
         let id = format!("offer-{}", &uuid::Uuid::new_v4().to_string()[..8]);
         self.conn.execute(
-            "INSERT INTO offers (id, provider, rtype, amount, price_per_hour, endpoint, wg_pubkey, status, created_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 'open', ?8)",
-            params![id, provider, rtype, amount as i64, price, endpoint, wg_pubkey, now()],
+            "INSERT INTO offers (id, provider, rtype, amount, price_per_hour, endpoint, wg_pubkey, bench_gflops, status, created_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, 'open', ?9)",
+            params![id, off.provider, off.rtype, off.amount as i64, off.price, off.endpoint, off.wg_pubkey, off.bench_gflops, now()],
         )?;
         Ok(id)
     }
 
     pub fn list_offers(&self) -> Result<Vec<Offer>> {
         let mut stmt = self.conn.prepare(
-            "SELECT id, provider, rtype, amount, price_per_hour, endpoint, wg_pubkey, status FROM offers
+            "SELECT id, provider, rtype, amount, price_per_hour, endpoint, wg_pubkey, bench_gflops, status FROM offers
              WHERE status = 'open' ORDER BY price_per_hour ASC",
         )?;
         let rows = stmt.query_map([], |r| {
@@ -185,7 +225,8 @@ impl Market {
                 price_per_hour: r.get(4)?,
                 endpoint: r.get(5)?,
                 wg_pubkey: r.get(6)?,
-                status: r.get(7)?,
+                bench_gflops: r.get(7)?,
+                status: r.get(8)?,
             })
         })?;
         Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
@@ -193,7 +234,7 @@ impl Market {
 
     pub fn get_offer(&self, id: &str) -> Result<Offer> {
         self.conn.query_row(
-            "SELECT id, provider, rtype, amount, price_per_hour, endpoint, wg_pubkey, status FROM offers WHERE id = ?1",
+            "SELECT id, provider, rtype, amount, price_per_hour, endpoint, wg_pubkey, bench_gflops, status FROM offers WHERE id = ?1",
             params![id],
             |r| {
                 Ok(Offer {
@@ -204,34 +245,26 @@ impl Market {
                     price_per_hour: r.get(4)?,
                     endpoint: r.get(5)?,
                     wg_pubkey: r.get(6)?,
-                    status: r.get(7)?,
+                    bench_gflops: r.get(7)?,
+                    status: r.get(8)?,
                 })
             },
         ).with_context(|| format!("offer {id} not found"))
     }
 
-    pub fn add_request(
-        &self,
-        requester: &str,
-        rtype: &str,
-        amount: u32,
-        max_price: f64,
-        hours: u32,
-        wg_pubkey: &str,
-        endpoint: &str,
-    ) -> Result<String> {
+    pub fn add_request(&self, req: &NewRequest) -> Result<String> {
         let id = format!("req-{}", &uuid::Uuid::new_v4().to_string()[..8]);
         self.conn.execute(
-            "INSERT INTO requests (id, requester, rtype, amount, max_price, hours, wg_pubkey, endpoint, status, created_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, 'open', ?9)",
-            params![id, requester, rtype, amount as i64, max_price, hours as i64, wg_pubkey, endpoint, now()],
+            "INSERT INTO requests (id, requester, rtype, amount, max_price, hours, wg_pubkey, endpoint, image, gpus, min_bench, status, created_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, 'open', ?12)",
+            params![id, req.requester, req.rtype, req.amount as i64, req.max_price, req.hours as i64, req.wg_pubkey, req.endpoint, req.image, req.gpus as i64, req.min_bench, now()],
         )?;
         Ok(id)
     }
 
     pub fn list_requests(&self) -> Result<Vec<Request>> {
         let mut stmt = self.conn.prepare(
-            "SELECT id, requester, rtype, amount, max_price, hours, wg_pubkey, endpoint, status FROM requests
+            "SELECT id, requester, rtype, amount, max_price, hours, wg_pubkey, endpoint, image, gpus, min_bench, status FROM requests
              WHERE status = 'open' ORDER BY created_at ASC",
         )?;
         let rows = stmt.query_map([], |r| {
@@ -244,7 +277,10 @@ impl Market {
                 hours: r.get::<_, i64>(5)? as u32,
                 wg_pubkey: r.get(6)?,
                 endpoint: r.get(7)?,
-                status: r.get(8)?,
+                image: r.get(8)?,
+                gpus: r.get::<_, i64>(9)? as u32,
+                min_bench: r.get(10)?,
+                status: r.get(11)?,
             })
         })?;
         Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
@@ -252,7 +288,7 @@ impl Market {
 
     pub fn get_request(&self, id: &str) -> Result<Request> {
         self.conn.query_row(
-            "SELECT id, requester, rtype, amount, max_price, hours, wg_pubkey, endpoint, status FROM requests WHERE id = ?1",
+            "SELECT id, requester, rtype, amount, max_price, hours, wg_pubkey, endpoint, image, gpus, min_bench, status FROM requests WHERE id = ?1",
             params![id],
             |r| {
                 Ok(Request {
@@ -264,7 +300,10 @@ impl Market {
                     hours: r.get::<_, i64>(5)? as u32,
                     wg_pubkey: r.get(6)?,
                     endpoint: r.get(7)?,
-                    status: r.get(8)?,
+                    image: r.get(8)?,
+                    gpus: r.get::<_, i64>(9)? as u32,
+                    min_bench: r.get(10)?,
+                    status: r.get(11)?,
                 })
             },
         ).with_context(|| format!("request {id} not found"))
@@ -282,9 +321,11 @@ impl Market {
                 &req.rtype,
                 req.amount,
                 req.max_price,
+                req.min_bench,
                 &o.rtype,
                 o.amount,
                 o.price_per_hour,
+                o.bench_gflops,
             ) {
                 let est_cost = score * o.price_per_hour * req.hours as f64;
                 let id = format!("match-{}", &uuid::Uuid::new_v4().to_string()[..8]);
@@ -305,6 +346,23 @@ impl Market {
         }
         out.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap());
         Ok(out)
+    }
+
+    pub fn get_match(&self, id: &str) -> Result<MatchRow> {
+        self.conn.query_row(
+            "SELECT id, offer_id, request_id, score, est_cost, status FROM matches WHERE id = ?1",
+            params![id],
+            |r| {
+                Ok(MatchRow {
+                    id: r.get(0)?,
+                    offer_id: r.get(1)?,
+                    request_id: r.get(2)?,
+                    score: r.get(3)?,
+                    est_cost: r.get(4)?,
+                    status: r.get(5)?,
+                })
+            },
+        ).with_context(|| format!("match {id} not found"))
     }
 
     /// Accept a proposed match: closes offer+request, settles credits.
@@ -342,6 +400,44 @@ impl Market {
         Ok((request.requester, offer.provider, est_cost))
     }
 
+    /// S3: withdraw an open request. No credits moved (only accept settles).
+    pub fn cancel_request(&self, id: &str) -> Result<String> {
+        let req = self.get_request(id)?;
+        if req.status != "open" {
+            anyhow::bail!("request {id} is not open (status: {})", req.status);
+        }
+        self.conn.execute(
+            "UPDATE requests SET status = 'cancelled' WHERE id = ?1",
+            params![id],
+        )?;
+        Ok("cancelled".to_string())
+    }
+
+    /// S3: expire open requests older than `ttl_hours`. Returns evicted count.
+    pub fn expire_stale(&self, ttl_hours: u32) -> Result<usize> {
+        let cutoff = chrono::Utc::now() - chrono::Duration::hours(ttl_hours as i64);
+        let mut stmt = self.conn.prepare(
+            "SELECT id, created_at FROM requests WHERE status = 'open'",
+        )?;
+        let rows: Vec<(String, String)> = stmt
+            .query_map([], |r| Ok((r.get(0)?, r.get(1)?)))?
+            .collect::<std::result::Result<Vec<_>, _>>()?;
+        let mut evicted = 0;
+        for (id, created_at) in rows {
+            let stale = chrono::DateTime::parse_from_rfc3339(&created_at)
+                .map(|dt| dt.with_timezone(&chrono::Utc) < cutoff)
+                .unwrap_or(false);
+            if stale {
+                self.conn.execute(
+                    "UPDATE requests SET status = 'expired' WHERE id = ?1",
+                    params![id],
+                )?;
+                evicted += 1;
+            }
+        }
+        Ok(evicted)
+    }
+
     /// Allocate the next free 10.0.0.x tunnel IP for a peer (provider side).
     pub fn alloc_ip(&self, peer_pubkey: &str, match_id: &str) -> Result<String> {
         let mut stmt = self.conn.prepare("SELECT ip FROM allocs")?;
@@ -350,7 +446,7 @@ impl Market {
             .collect::<std::result::Result<Vec<_>, _>>()?;
         for last in 3..=254u8 {
             let ip = format!("10.0.0.{last}");
-            if !used.iter().any(|u| *u == ip) {
+            if !used.contains(&ip) {
                 self.conn.execute(
                     "INSERT INTO allocs (ip, peer_pubkey, match_id, created_at) VALUES (?1, ?2, ?3, ?4)",
                     params![ip, peer_pubkey, match_id, now()],
@@ -399,11 +495,31 @@ mod tests {
 
     #[test]
     fn score_rejects_mismatch() {
-        assert!(match_score("gpu", 16, 1.0, "ram", 32, 0.5).is_none());
-        assert!(match_score("gpu", 16, 1.0, "gpu", 32, 2.0).is_none());
-        assert!(match_score("gpu", 64, 1.0, "gpu", 32, 0.5).is_none());
-        let s = match_score("gpu", 16, 1.0, "gpu", 32, 0.5).unwrap();
+        assert!(match_score("gpu", 16, 1.0, 0.0, "ram", 32, 0.5, 0.0).is_none());
+        assert!(match_score("gpu", 16, 1.0, 0.0, "gpu", 32, 2.0, 0.0).is_none());
+        assert!(match_score("gpu", 64, 1.0, 0.0, "gpu", 32, 0.5, 0.0).is_none());
+        let s = match_score("gpu", 16, 1.0, 0.0, "gpu", 32, 0.5, 0.0).unwrap();
         assert!((0.0..=1.0).contains(&s));
+    }
+
+    #[test]
+    fn score_enforces_bench_floor() {
+        // Unbenched offer (0.0) never matches a request demanding a floor.
+        assert!(match_score("gpu", 16, 1.0, 10.0, "gpu", 32, 0.5, 0.0).is_none());
+        assert!(match_score("gpu", 16, 1.0, 10.0, "gpu", 32, 0.5, 9.9).is_none());
+        assert!(match_score("gpu", 16, 1.0, 10.0, "gpu", 32, 0.5, 10.0).is_some());
+    }
+
+    fn new_offer(provider: &str, endpoint: &str, wg_pubkey: &str) -> NewOffer {
+        NewOffer {
+            provider: provider.to_string(),
+            rtype: "gpu".to_string(),
+            amount: 32,
+            price: 0.5,
+            endpoint: endpoint.to_string(),
+            wg_pubkey: wg_pubkey.to_string(),
+            bench_gflops: 0.0,
+        }
     }
 
     #[test]
@@ -411,7 +527,7 @@ mod tests {
         let m = Market::open_memory()?;
         migrate(&m.conn)?;
         migrate(&m.conn)?;
-        m.add_offer("bob", "gpu", 32, 0.5, "1.2.3.4:51820", "PUB")?;
+        m.add_offer(&new_offer("bob", "1.2.3.4:51820", "PUB"))?;
         Ok(())
     }
 
@@ -419,8 +535,22 @@ mod tests {
     fn full_flow_in_memory() -> Result<()> {
         let m = Market::open_memory()?;
         m.faucet("alice", 100.0)?;
-        let oid = m.add_offer("bob", "gpu", 32, 0.5, "1.2.3.4:51820", "PUBBOB")?;
-        let rid = m.add_request("alice", "gpu", 16, 1.0, 2, "PUBALICE", "")?;
+        let oid = m.add_offer(&new_offer("bob", "1.2.3.4:51820", "PUBBOB"))?;
+        let rid = m.add_request(&NewRequest {
+            requester: "alice".to_string(),
+            rtype: "gpu".to_string(),
+            amount: 16,
+            max_price: 1.0,
+            hours: 2,
+            wg_pubkey: "PUBALICE".to_string(),
+            endpoint: String::new(),
+            image: "ubuntu:22.04".to_string(),
+            gpus: 1,
+            min_bench: 0.0,
+        })?;
+        let req = m.get_request(&rid)?;
+        assert_eq!(req.image, "ubuntu:22.04");
+        assert_eq!(req.gpus, 1);
         let offer = m.get_offer(&oid)?;
         assert_eq!(offer.endpoint, "1.2.3.4:51820");
         let matches = m.find_matches(&rid)?;
@@ -435,6 +565,38 @@ mod tests {
         assert_ne!(ip1, ip2);
         assert!(ip1.starts_with("10.0.0."));
         assert!(m.find_matches(&rid).is_err()); // request filled
+        Ok(())
+    }
+
+    #[test]
+    fn cancel_and_expiry() -> Result<()> {
+        let m = Market::open_memory()?;
+        let new_req = |requester: &str| NewRequest {
+            requester: requester.to_string(),
+            rtype: "gpu".to_string(),
+            amount: 16,
+            max_price: 1.0,
+            hours: 2,
+            wg_pubkey: String::new(),
+            endpoint: String::new(),
+            image: String::new(),
+            gpus: 0,
+            min_bench: 0.0,
+        };
+        let rid = m.add_request(&new_req("alice"))?;
+        assert_eq!(m.cancel_request(&rid)?, "cancelled");
+        assert_eq!(m.get_request(&rid)?.status, "cancelled");
+        assert!(m.cancel_request(&rid).is_err()); // no longer open
+        assert!(m.find_matches(&rid).is_err()); // cannot match it anymore
+        assert!(m.cancel_request("req-missing").is_err()); // unknown id
+        let rid2 = m.add_request(&new_req("bob"))?;
+        m.conn.execute(
+            "UPDATE requests SET created_at = '2000-01-01T00:00:00+00:00' WHERE id = ?1",
+            params![rid2],
+        )?;
+        assert_eq!(m.expire_stale(24)?, 1);
+        assert_eq!(m.get_request(&rid2)?.status, "expired");
+        assert_eq!(m.expire_stale(24)?, 0); // idempotent
         Ok(())
     }
 }

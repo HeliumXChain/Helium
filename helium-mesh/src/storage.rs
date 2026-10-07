@@ -318,9 +318,7 @@ impl StorageManager {
     }
 
     fn helium_dir() -> Result<std::path::PathBuf> {
-        let home = dirs::home_dir()
-            .context("Failed to determine home directory")?;
-        Ok(home.join(".helium"))
+        crate::identity::helium_dir()
     }
 }
 

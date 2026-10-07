@@ -7,6 +7,7 @@
 #   sh install.sh --source            # build depuis sources (cargo)
 #   sh install.sh --dir ~/.local/bin  # dossier d'install custom
 #   sudo sh install.sh --provider --daemon   # provider complet + service
+#   sudo sh install.sh --provider --daemon --vm  # + microVM persistante
 #   sh install.sh --borrower --endpoint IP:51820 --pubkey CLE
 set -euo pipefail
 
@@ -25,6 +26,7 @@ INSTALL_DIR=""
 CHECK_ONLY=0
 FROM_SOURCE=0
 WITH_DAEMON=0
+WITH_VM=0
 ROLE=""
 ENDPOINT=""
 PEER_PUBKEY=""
@@ -37,6 +39,7 @@ for arg in "$@"; do
     --check-only) CHECK_ONLY=1 ;;
     --source) FROM_SOURCE=1 ;;
     --daemon) WITH_DAEMON=1 ;;
+    --vm) WITH_VM=1 ;;
     --provider) ROLE="provider" ;;
     --borrower) ROLE="borrower" ;;
     --endpoint|--pubkey|--endpoint=*|--pubkey=*) ;;
@@ -380,6 +383,9 @@ main() {
   if [ "$WITH_DAEMON" = "1" ]; then
     install_daemon_service || warn "service daemon non installe"
   fi
+  if [ "$WITH_VM" = "1" ]; then
+    install_vm_service || warn "service VM non installe"
+  fi
   if command -v "$BINARY" >/dev/null 2>&1; then
     "$BINARY" --version 2>/dev/null || true
   elif [ -x "$INSTALL_DIR/$BINARY" ]; then
@@ -406,6 +412,32 @@ install_helium_binary() {
   if [ -z "$VERSION" ]; then VERSION="$(latest_version "$REPO")"; fi
   if [ -z "$VERSION" ]; then warn "derniere release introuvable — fallback --source"; install_from_source;
   else install_from_release "$VERSION" || { warn "fallback build source"; install_from_source; }; fi
+}
+
+# Service systemd pour la microVM (remonte seule au boot).
+install_vm_service() {
+  [ "$PLAT_OS" = "linux" ] || { err "service VM = Linux requis"; return 1; }
+  [ -x "/srv/helium-vm/fc-vm.sh" ] || { err "fc-vm.sh absent (/srv/helium-vm)"; return 1; }
+  $SUDO tee /etc/systemd/system/helium-vm.service >/dev/null <<'EOF'
+[Unit]
+Description=Helium Firecracker microVM (2vCPU/2Go, guest 172.16.0.2)
+After=network-online.target wg-quick@helium-poc.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/srv/helium-vm/fc-vm.sh up
+ExecStop=/srv/helium-vm/fc-vm.sh down
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  $SUDO systemctl daemon-reload
+  $SUDO systemctl enable --now helium-vm
+  sleep 2
+  $SUDO systemctl is-active --quiet helium-vm || { err "service helium-vm inactif"; return 1; }
+  ok "service helium-vm actif (remonte au boot)"
 }
 
 # Service systemd pour `helium daemon` (redemarrage auto).

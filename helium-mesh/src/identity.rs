@@ -11,12 +11,25 @@ const IDENTITY_FILE: &str = "identity.json";
 const CONFIG_FILE: &str = "config.toml";
 const TOKEN_FILE: &str = "api_token";
 
+/// Node state directory. HELIUM_HOME (absolute path) overrides it wholesale:
+/// tests, portable nodes, multi-node on one machine. Unset = ~/.helium.
+pub fn helium_dir() -> Result<PathBuf> {
+    if let Ok(dir) = std::env::var("HELIUM_HOME") {
+        if !dir.trim().is_empty() {
+            return Ok(PathBuf::from(dir));
+        }
+    }
+    let home = dirs::home_dir()
+        .context("Failed to determine home directory")?;
+    Ok(home.join(HELIUM_DIR))
+}
+
 /// Read (or generate) the local API token. Missing file on old nodes =
 /// fail-open with empty token (see `authorized`); new nodes get one at init.
 pub fn api_token() -> String {
-    let path = match dirs::home_dir() {
-        Some(h) => h.join(HELIUM_DIR).join(TOKEN_FILE),
-        None => return String::new(),
+    let path = match helium_dir() {
+        Ok(d) => d.join(TOKEN_FILE),
+        Err(_) => return String::new(),
     };
     if let Ok(t) = std::fs::read_to_string(&path) {
         let t = t.trim().to_string();
@@ -233,9 +246,7 @@ impl IdentityManager {
 
     /// Get helium directory path
     fn helium_dir() -> Result<PathBuf> {
-        let home = dirs::home_dir()
-            .context("Failed to determine home directory")?;
-        Ok(home.join(HELIUM_DIR))
+        helium_dir()
     }
 
     /// Sign a message
